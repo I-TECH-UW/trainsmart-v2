@@ -1,0 +1,88 @@
+<section class="container-fluid" style="margin-top:20px;">
+  <div class="card">
+      <div class="card-header">
+        {{ 'NAV.TRAININGS' | translate }}
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <form class="form-inline my-2 my-lg-0 col-auto" novalidate>
+            <label for="sizeInput" class="mr-sm-2">Show:</label>
+            <select id="sizeInput" type="text" class="form-control" >
+              <option value="10" selected>10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select>
+            <label class="ml-2">Entries</label>
+          </form>
+          
+          <div class="col-auto mr-auto">
+              <button type="button" class="btn btn-primary mr-2" (click)="addTraining()">{{ 'TRAINING.ADD_NEW_TRAINING' | translate }}</button>
+              <button type="button" class="btn btn-primary mr-2" (click)="refresh()">{{ 'SHARED.REFRESH' | translate }}</button>                 
+            </div>
+          <form class="form-inline my-2 my-lg-0 col-auto">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          </form>
+          <!-- <div class="col-md-3">
+            
+          </div> -->
+        </div>
+        <div>&nbsp;</div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="table-responsive-sm">
+              <table id="myTable" class="table table-striped table-bordered table-hover table-sm">
+                <caption>List of Trainings</caption>
+                <thead class="thead-dark">
+                  <tr>
+                    <th>{{ 'TRAINING_LIST.ID' | translate }}</th>
+                    <th>{{ 'TRAINING_LIST.TRAINING_TITLE' | translate }}</th>
+                    <th>{{ 'TRAINING_LIST.START_DATE' | translate }}</th>
+                    <th>{{ 'TRAINING_LIST.END_DATE' | translate }}</th>
+                    <th>{{ 'TRAINING_LIST.CREATED_BY' | translate }}</th>
+                    <th>{{ 'TRAINING_LIST.STATUS' | translate }}</th>
+                    <th>{{ 'SHARED.ACTION' | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let training of trainings; let i = index;" [ngStyle]="{ 'color': getColorCode(training.statusid)}">
+                    <td tooltip="{{training.id}}" tooltip-placement="top">{{ (i + 1) + (currentPage-1) * itemsPerPage }}</td>
+                    <td>{{ training.trainingtitle }}</td>
+                    <td>{{ training.startdate }}</td>
+                    <td>{{ training.enddate }}</td>
+                    <td>{{ training.createdby }}</td>
+                    <td>{{ training.status }}</td>
+                    <td>
+                      <app-approve [training]="training" (approval)="approve($event)"></app-approve>
+                      <button type="button" class="btn btn-sm btn-info" (click)="addTraining(training.id)"
+                            tooltip="{{ 'SHARED.TT_EDIT_RECORD' | translate }}" tooltip-placement="top">
+                          <i class="fa fa-pencil-square-o fa-lg"></i> {{ 'SHARED.EDIT' | translate }}
+                      </button>
+                      <button type="button" class="btn btn-sm btn-danger" (click)="delete(training)"
+                            tooltip="{{ 'SHARED.TT_DELETE_RECORD' | translate }}" tooltip-placement="top">
+                          <i class="fa fa-trash-o fa-lg"></i> {{ 'SHARED.DELETE' | translate }}
+                      </button>        
+                    </td>
+                  </tr>
+                </tbody>
+              </table>  
+            </div>
+          </div> 
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <pagination 
+              [totalItems]="totalItems" 
+              [(ngModel)]="currentPage" 
+              [maxSize]="maxSize" 
+              class="pull-right pagination-md" 
+              [boundaryLinks]="true" 
+              [rotate]="false" 
+              [itemsPerPage]="itemsPerPage"
+              (pageChanged) = "pageChanged($event)"
+              (numPages)="numPages = $event"></pagination>
+          </div>
+        </div>
+      </div>
+  </div>
+</section>

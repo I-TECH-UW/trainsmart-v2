@@ -1,0 +1,15 @@
+.ts-accordion-table{
+    width:100%;
+    height:400px;
+    overflow:auto;
+}
+
+.ts-accordion-table-md{
+    width:100%;
+    height:300px;
+    overflow:auto;
+}
+
+#myTable a {
+    cursor:pointer;
+}

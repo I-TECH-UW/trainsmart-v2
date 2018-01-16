@@ -1,0 +1,20 @@
+<div class="modal-header bg-success">
+  <h4 class="modal-title pull-left">{{ 'TRAINING.ADD_NEW_TRAINING_TITLE' | translate }}</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="editableForm" novalidate>
+      <div class="form-group row">
+        <label for="lbltitle" class="col-sm-2 col-form-label">{{ 'TRAINING.TRAINING_TITLE' | translate }}</label>
+        <div class="col-sm-10">
+          <input id="lbltitle" name="lbltitle" type="text" class="form-control" placeholder="" formControlName="name" required>
+        </div>
+      </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" [disabled]="editableForm.invalid" (click)="onSubmit()">{{'SHARED.SUBMIT' | translate}}</button>
+  <button type="button" class="btn btn-default" (click)="onCancel()">{{'SHARED.CLOSE' | translate}}</button>
+</div>

@@ -1,0 +1,15 @@
+<div class="modal-header">
+  <div class="pull-left">
+    <h4 class="modal-title">{{ 'SHARED.CONFIRM_' + type + '_TITLE'  | translate }} {{': ' + appendinfo}}</h4>
+  </div>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <span>{{ 'SHARED.CONFIRM_' + type + '_MSG' | translate }}</span>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" (click)="yesClicked()">{{'SHARED.YES' | translate}}</button>
+  <button type="button" class="btn btn-default" (click)="noClicked()">{{'SHARED.NO' | translate}}</button>
+</div>

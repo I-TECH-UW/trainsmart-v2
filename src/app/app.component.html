@@ -1,0 +1,103 @@
+<header class="sticky-top">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <a class="navbar-brand mr-0 mr-md-2" href="#">
+      <img class="img-responsive" width="160" height="73" src="/assets/images/logo.jpg"/>
+    </a>
+    <span class="ts-title" href="#">{{title}}</span>
+    
+    <div class="collapse navbar-collapse justify-content-end" id="nav-content">  
+      <div id="languageLinks">
+          <div class="float-right">
+            <span *ngIf="isLoggedIn" class="text-uppercase text-default" style="color:blue;">{{ 'HOME.WELCOME' | translate }}, USER |</span> 
+            <a *ngIf="isLoggedIn" class="text-uppercase" (click)="logout()" style="cursor:pointer;color:white;">{{ 'HOME.LOGOUT' | translate }}</a></div>
+      
+          <!-- switch language -->
+          <div class="ts-lang">
+            <ul class="navbar-nav">
+              <li class="nav-item" *ngFor="let lang of langs">
+                <small><a class="nav-link" [ngClass]="[lang.code === translate.currentLang ? 'active' : '']" (click)="onLanguageChanged(lang)">{{'LANGUAGE.' + lang.language | uppercase | translate}}</a></small>
+              </li>
+            </ul>
+          </div>
+      
+        </div>
+    </div>
+  </nav>
+  <nav *ngIf="isLoggedIn" class="navbar navbar-expand-lg navbar-dark bg-dark">
+    
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+          <li class="nav-item" [ngClass]="{'dropdown':entry.value.length}" *ngFor="let entry of routes | keys">
+            <ng-container *ngIf="entry.key!=='MY_ACCOUNT' && !entry.value.length">
+                <a class="nav-link" href="{{entry.key | lowercase}}" id="entry.key" role="button">
+                  {{'NAV.'+entry.key | translate | uppercase}}
+                </a>
+            </ng-container>
+            <!--Dropdown only if it has an array of values-->
+            <ng-container *ngIf="entry.key!=='MY_ACCOUNT' && entry.value.length">
+              <a class="nav-link dropdown-toggle" href="#" id="entry.key" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{'NAV.'+entry.key | translate | uppercase}}
+              </a>
+              <div *ngIf="entry.value" class="dropdown-menu" aria-labelledby="entry.key">
+                  <ng-container *ngFor="let item of entry.value">
+                    <ng-container *ngIf="item.name">
+                        <a class="dropdown-item" [routerLink]="item.link">
+                          <small>{{ 'NAV.'+item.name | translate | uppercase}}</small>
+                        </a>
+                    </ng-container>
+                    <ng-container *ngIf="item.name==null">
+                      <div  class="dropdown-divider"></div>
+                    </ng-container>
+                  </ng-container>
+              </div>
+            </ng-container>
+          </li>
+      </ul>
+
+      <span class="form-inline">
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-item nav-link dropdown-toggle" href="#" id="myaccount" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{'NAV.MY_ACCOUNT' | translate | uppercase}}
+            </a>
+            <div *ngIf="routes.MY_ACCOUNT" class="dropdown-menu" aria-labelledby="myaccount">
+              <ng-container *ngFor="let item of routes.MY_ACCOUNT">
+                <ng-container *ngIf="item.name">
+                    <a class="dropdown-item" [routerLink]="item.link">
+                      <small>{{ 'NAV.'+item.name | translate | uppercase}}</small>
+                    </a>
+                </ng-container>
+                <ng-container *ngIf="item.name==null">
+                  <div  class="dropdown-divider"></div>
+                </ng-container>
+              </ng-container>
+            </div>
+          </li>
+        </ul>
+      </span>
+    </div>
+  </nav> 
+
+</header>
+<main class="container-fluid" style="margin-bottom:70px;">
+  <ts-alert></ts-alert>
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-left">
+      ©2018 <a ui-sref="#">Developed and funded by </a>
+      <em>I-TECH</em>
+  </div>
+  <div class="footer-right">
+      <div class="footer-word-links">
+          <a href="#">About</a>
+          <a href="#">Support</a>
+          <a href="#">Help</a>
+      </div>
+  </div>    
+</footer>

@@ -1,0 +1,16 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('../node_modules/ngx-bootstrap/datepicker/bs-datepicker.css');
+.card {
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+.ng-valid[required], .ng-valid.required  {
+    border: 1px solid #42A948; /* green */
+} 
+
+/* .ng-touched.ng-valid:not(form):not(label){
+    border: 1px solid #42A948;
+} */
+.ng-invalid:not(form)  {
+    border: 1px solid #a94442; /* red */
+}

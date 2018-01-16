@@ -1,0 +1,10 @@
+.kenyaflag {
+    height: 5px;
+    border-top: 0;
+    background: #c4e17f;
+    border-radius: 5px;
+    background-image: -webkit-linear-gradient(to right, black, white ,red, white,green);
+    background-image: -moz-linear-gradient(to right, black, white ,red, white,green);
+    background-image: -o-linear-gradient(to right, black, white ,red, white,green);
+    background-image: linear-gradient(to right, black, white ,red, white,green);
+}

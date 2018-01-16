@@ -1,0 +1,30 @@
+<div class="row">
+  <div class="col-12 col-sm-12 col-md-12 text-center">
+      <h2>{{'LOGIN.WELCOME' | translate}}</h2>
+      <span>{{'LOGIN.WELCOME_SUBTITLE' | translate}}</span>
+  </div>
+</div>
+<hr class="kenyaflag">
+<div class="row justify-content-center">
+  <div class="card border-success">
+    <h4 class="card-header bg-success">Login</h4>
+    <div class="card-body">
+      <form [formGroup]="loginForm" novalidate>
+        <div class="form-group">
+          <label for="username">{{'LOGIN.USERNAME' | translate}}</label>
+          <input type="email" class="form-control" formControlName="username" aria-describedby="userHelp" placeholder="{{'LOGIN.ENTER_USERNAME' | translate}}">
+          <small id="userHelp" class="form-text text-muted">{{'LOGIN.NEVER_SHARE' | translate}}</small>
+        </div>
+        <div class="form-group">
+          <label for="pwd">{{'LOGIN.PASSWORD' | translate}}</label>
+          <input type="password" class="form-control" formControlName="password" placeholder="{{'LOGIN.ENTER_PASSWORD' | translate}}">
+        </div>
+      </form>
+      <button type="button" class="btn btn-primary float-right" [disabled]="loginForm.invalid" (click)="signIn()">{{'LOGIN.SIGNIN' | translate}}</button>
+    </div>
+    <div class="card-footer bg-transparent border-success">
+      <a href="#" class="card-link float-right">{{'LOGIN.FORGOT_PASSWORD' | translate}}</a>
+    </div>
+  </div>
+</div>
+

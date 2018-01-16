@@ -1,0 +1,73 @@
+<section class="container-fluid" style="margin-top:20px;">
+  <div class="row">
+    <div class="col-md-12">
+        <button type="button" class="btn btn-primary" (click)="addPerson()">{{ 'PERSON_LIST.ADD_NEW_PERSON' | translate }}</button>
+        <button type="button" class="btn btn-primary" (click)="refresh()">{{ 'SHARED.REFRESH' | translate }}</button>
+    </div>
+    <!-- <div class="col-md-3">
+      <form formGroup="searchForm" novalidate>
+        <label for="sizeInput">Size:</label>
+        <select id="sizeInput" type="text" class="form-control" formControlName="size">
+          <option value="10" selected>10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+        </select>
+      </form>
+    </div> -->
+  </div>
+  <div>&nbsp;</div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-responsive-sm">
+        <table id="myTable" class="table table-striped table-bordered table-hover table-sm">
+          <caption>List of Trainings</caption>
+          <thead class="thead-dark">
+            <tr>
+              <th>#</th>
+              <th>{{ 'PERSON_LIST.FIRST_NAME' | translate }}</th>
+              <th>{{ 'PERSON_LIST.MIDDLE_NAME' | translate }}</th>
+              <th>{{ 'PERSON_LIST.LAST_NAME' | translate }}</th>
+              <th>{{ 'PERSON_LIST.GENDER' | translate }}</th>
+              <th>{{ 'PERSON_LIST.QUALIFICATION' | translate }}</th>
+              <th>{{ 'SHARED.ACTION' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let person of people; let i = index;">
+              <td tooltip="{{person.id}}" tooltip-placement="top">{{ (i + 1) + (currentPage-1) * itemsPerPage }}</td>
+              <td>{{ person.first_name }}</td>
+              <td>{{ person.middle_name }}</td>
+              <td>{{ person.last_name }}</td>
+              <td>{{ person.gender }}</td>
+              <td>{{ person.qualification }}</td>
+              <td>
+                <button type="button" class="btn btn-sm btn-info" (click)="addPerson(person.id)"
+                      tooltip="{{ 'SHARED.TT_EDIT_RECORD' | translate }}" tooltip-placement="top">
+                    <i class="fa fa-pencil-square-o fa-lg"></i> {{ 'SHARED.EDIT' | translate }}
+                </button>
+                <button type="button" class="btn btn-sm btn-danger" (click)="delete(person)"
+                      tooltip="{{ 'SHARED.TT_DELETE_RECORD' | translate }}" tooltip-placement="top">
+                    <i class="fa fa-trash-o fa-lg"></i> {{ 'SHARED.DELETE' | translate }}
+                </button>        
+              </td>
+            </tr>
+          </tbody>
+        </table>  
+      </div>
+    </div> 
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <pagination 
+        [totalItems]="totalItems" 
+        [(ngModel)]="currentPage" 
+        [maxSize]="maxSize" 
+        class="pull-right pagination-md" 
+        [boundaryLinks]="true" 
+        [rotate]="false" 
+        [itemsPerPage]="itemsPerPage"
+        (pageChanged) = "pageChanged($event)"
+        (numPages)="numPages = $event"></pagination>
+    </div>
+  </div>
+</section>

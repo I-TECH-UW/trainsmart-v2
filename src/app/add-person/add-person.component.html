@@ -1,0 +1,70 @@
+<div class="modal-header bg-primary">
+  <h4 class="modal-title">{{'TRAINING.ADD_NEW_TRAINING' | translate}}</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="onCancel()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="personForm" novalidate>
+    <div class="form-row">
+      <div class="form-group col-md-12">
+        <div>
+          <label class="custom-control custom-radio custom-control-inline" *ngFor="let option of activeList">
+            <input type="radio" value="{{option.id}}" formControlName="gender_id" class="custom-control-input">
+            <span class="custom-control-indicator"></span>
+            <span class="custom-control-description">{{option.name}}</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label for="title">{{'PERSON.TITLE' | translate}}</label>
+        <select id="title" tooltip="" tooltip-placement="top" class="form-control custom-select" formControlName="title_option_id" required>
+          <option value="" selected="selected">--{{ 'SHARED.SELECT' | translate }}--</option>
+          <option *ngFor="let option of titleList" value="{{option.id}}">{{option.name}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label for="firstname">{{'PERSON.FIRST_NAME' | translate}}</label>
+        <input id="firstname" tooltip="" tooltip-placement="top" type="text" class="form-control" formControlName="first_name" required>
+      </div>
+      <div class="form-group col-md-4">
+        <label for="middlename">{{'PERSON.MIDDLE_NAME' | translate}}</label>
+        <input id="middlename" tooltip="" tooltip-placement="top" type="text" class="form-control" formControlName="middle_name" >
+      </div>
+      <div class="form-group col-md-4">
+        <label for="lastname">{{'PERSON.LAST_NAME' | translate}}</label>
+        <input id="lastname" tooltip="" tooltip-placement="top" type="text" class="form-control" formControlName="last_name" required>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label for="title">{{'PERSON.SUFFIX' | translate}}</label>
+        <select id="title" tooltip="" tooltip-placement="top" class="form-control custom-select" formControlName="title_option_id" required>
+          <option value="" selected="selected">--{{ 'SHARED.SELECT' | translate }}--</option>
+          <option *ngFor="let option of suffixList" value="{{option.id}}">{{option.name}}</option>
+        </select>
+      </div>
+      <div class="form-group col-md-4">
+        <div class="custom-controls-stacked">
+          <label class="custom-control custom-radio" *ngFor="let option of genderList">
+            <input type="radio" value="{{option.id}}" formControlName="gender_id" class="custom-control-input">
+            <span class="custom-control-indicator"></span>
+            <span class="custom-control-description">{{'SHARED.' + option.name | uppercase | translate}}</span>
+          </label>
+        </div>
+      </div>
+      <div class="form-group col-md-4">
+        <label for="nationalid">{{'PERSON.NATIONAL_ID' | translate}}</label>
+        <input id="nationalid" tooltip="" tooltip-placement="top" type="text" class="form-control" formControlName="national_id" required>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" [disabled]="personForm.invalid" (click)="onSubmit()">{{'SHARED.SUBMIT' | translate}}</button>
+  <button type="button" class="btn btn-primary" (click)="onCancel()">{{'SHARED.CANCEL' | translate}}</button>
+</div>
