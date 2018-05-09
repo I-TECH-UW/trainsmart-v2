@@ -1,29 +1,40 @@
 <header class="sticky-top">
   <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-    <a class="navbar-brand mr-0 mr-md-2" href="#">
-      <img class="img-responsive" width="160" height="73" src="/assets/images/logo.jpg"/>
-    </a>
-    <span class="ts-title" href="#">{{title}}</span>
+    <div class="navbar-brand mr-0 mr-md-2">
+      <img class="img-responsive" width="95" height="90" src="./assets/images/logo.png"/><!-- 160,73 75,70 mr-md-2-->
+      <!-- <img class="img-responsive mx-auto" width="300" height="90" src="/assets/images/trainsmart_logo.png"/> -->
+    </div>
+    <div class="navbar-brand mx-auto">
+        <img class="img-responsive" width="300" height="90" src="./assets/images/trainsmart_logo.png"/>
+    </div>
+    <div class="navbar-brand mx-auto">
+      <img class="img-responsive" width="300" height="90" src="./assets/images/nascop-logo.png"/>
+    </div>
+    <!-- <span class="ts-title" href="#">{{title}}</span> -->
     
     <div class="collapse navbar-collapse justify-content-end" id="nav-content">  
       <div id="languageLinks">
           <div class="float-right">
-            <span *ngIf="isLoggedIn" class="text-uppercase text-default" style="color:blue;">{{ 'HOME.WELCOME' | translate }}, USER |</span> 
-            <a *ngIf="isLoggedIn" class="text-uppercase" (click)="logout()" style="cursor:pointer;color:white;">{{ 'HOME.LOGOUT' | translate }}</a></div>
+            <ng-container *ngIf="currentUser$ | async as currentUser">
+            <span *ngIf="currentUser && currentUser.uid" class="text-uppercase text-default" style="color:gold;">{{ 'HOME.WELCOME' | translate }}, {{ currentUser.display_name }} | {{ authenticationService.getUserRole(currentUser)}}</span> 
+            </ng-container>
+            
+          </div>
       
           <!-- switch language -->
           <div class="ts-lang">
+              <a *ngIf="isLoggedIn$ | async" class="text-uppercase float-right" (click)="onLogout()" style="cursor:pointer;color:white;">{{ 'HOME.LOGOUT' | translate }}</a>
             <ul class="navbar-nav">
-              <li class="nav-item" *ngFor="let lang of langs">
+              <!-- <li class="nav-item" *ngFor="let lang of langs">
                 <small><a class="nav-link" [ngClass]="[lang.code === translate.currentLang ? 'active' : '']" (click)="onLanguageChanged(lang)">{{'LANGUAGE.' + lang.language | uppercase | translate}}</a></small>
-              </li>
+              </li> -->
             </ul>
           </div>
       
         </div>
     </div>
   </nav>
-  <nav *ngIf="isLoggedIn" class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <nav *ngIf="isLoggedIn$ | async" class="navbar navbar-expand-lg navbar-dark bg-dark">
     
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -32,13 +43,13 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
           <li class="nav-item" [ngClass]="{'dropdown':entry.value.length}" *ngFor="let entry of routes | keys">
-            <ng-container *ngIf="entry.key!=='MY_ACCOUNT' && !entry.value.length">
+            <ng-container *ngIf="entry.key!=='SETTINGS' && !entry.value.length">
                 <a class="nav-link" href="{{entry.key | lowercase}}" id="entry.key" role="button">
                   {{'NAV.'+entry.key | translate | uppercase}}
                 </a>
             </ng-container>
             <!--Dropdown only if it has an array of values-->
-            <ng-container *ngIf="entry.key!=='MY_ACCOUNT' && entry.value.length">
+            <ng-container *ngIf="entry.key!=='SETTINGS' && entry.value.length">
               <a class="nav-link dropdown-toggle" href="#" id="entry.key" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{'NAV.'+entry.key | translate | uppercase}}
               </a>
@@ -58,14 +69,14 @@
           </li>
       </ul>
 
-      <span class="form-inline">
+      <span class="form-inline mr-5">
         <ul class="navbar-nav">
           <li class="nav-item dropdown">
             <a class="nav-item nav-link dropdown-toggle" href="#" id="myaccount" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {{'NAV.MY_ACCOUNT' | translate | uppercase}}
+              {{'NAV.SETTINGS' | translate | uppercase}}
             </a>
-            <div *ngIf="routes.MY_ACCOUNT" class="dropdown-menu" aria-labelledby="myaccount">
-              <ng-container *ngFor="let item of routes.MY_ACCOUNT">
+            <div *ngIf="routes.SETTINGS" class="dropdown-menu" aria-labelledby="myaccount">
+              <ng-container *ngFor="let item of routes.SETTINGS">
                 <ng-container *ngIf="item.name">
                     <a class="dropdown-item" [routerLink]="item.link">
                       <small>{{ 'NAV.'+item.name | translate | uppercase}}</small>
@@ -84,14 +95,23 @@
 
 </header>
 <main class="container-fluid" style="margin-bottom:70px;">
-  <ts-alert></ts-alert>
+    <ngx-spinner
+    bdOpacity = 0.9
+    bdColor = "#333"
+    size = "large"
+    color = "#fff"
+    type = "ball-atom"
+    ></ngx-spinner>
+  <ng-container *ngIf="currentUser$ | async as currentUser">
+    <ts-alert *ngIf="currentUser && currentUser.uid"></ts-alert>
+  </ng-container>
   <router-outlet></router-outlet>
 </main>
 
-<footer class="site-footer">
+<!-- <footer class="site-footer">
   <div class="footer-left">
       ©2018 <a ui-sref="#">Developed and funded by </a>
-      <em>I-TECH</em>
+      <em>NASCOP</em>
   </div>
   <div class="footer-right">
       <div class="footer-word-links">
@@ -100,4 +120,4 @@
           <a href="#">Help</a>
       </div>
   </div>    
-</footer>
+</footer> -->

@@ -1,6 +1,7 @@
 import { HttpHeaders } from '@angular/common/http';
+import { environment } from '../environments/environment';
 
-export const BASEURL = 'http://localhost:8080';
+export const BASEURL = environment.api_url;
 
 const heads = new HttpHeaders();
 heads.set('Content-Type', 'application/json');

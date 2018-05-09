@@ -1,0 +1,94 @@
+<div class="modal-header text-white bg-primary">
+    <h4 *ngIf="!id; else elsetitle" class="modal-title">{{'USER.ADD_NEW_USER' | translate}}</h4>
+    <ng-template #elsetitle>
+        <h4 class="modal-title">{{'USER.EDIT_USER' | translate}}</h4>
+    </ng-template>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onCancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form [formGroup]="userForm" autocomplete="off" novalidate>
+            <div class="form-row" >
+                <!-- First Name -->
+                <div class="form-group col-md-6 required">
+                    <label for="firstname">{{'USER.FIRST_NAME' | translate}}</label>
+                    <input id="firstname" class="form-control" formControlName="first_name">
+                </div>
+                <!-- Middle Name -->
+                <div class="form-group col-md-6">
+                    <label for="middlename">{{'USER.MIDDLE_NAME' | translate}}</label>
+                    <input id="middlename" class="form-control" formControlName="middle_name">
+                </div>
+            </div>
+            <div class="form-row" >
+                <!-- Last Name -->
+                <div class="form-group col-md-6 required">
+                    <label for="lastname">{{'USER.LAST_NAME' | translate}}</label>
+                    <input id="lastname" class="form-control" formControlName="last_name">
+                </div>
+                <!-- Mobile -->
+                <div class="form-group col-md-6">
+                    <label for="mobile">{{'USER.MOBILE' | translate}}</label>
+                    <input id="mobile" class="form-control" formControlName="mobile">
+                </div>
+            </div>
+            <div class="form-row" >
+                <!-- Email -->
+                <div class="form-group col-md-6">
+                    <label for="email">{{'USER.EMAIL' | translate}}</label>
+                    <input type="email" id="email" class="form-control" formControlName="email">
+                </div>
+                <!-- Role -->
+                <div class="form-group col-md-6 required">
+                    <label for="role">{{'USER.ROLE' | translate}}</label>
+                    <select id="role" class="form-control custom-select" formControlName="roleid">
+                        <option value="" [selected]="true">--{{ 'HOME.SELECT' | translate }}--</option>
+                        <option *ngFor="let option of roles" value="{{option.id}}">{{option.name}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row" >
+                <!-- Username -->
+                <div class="form-group col-md-6 required">
+                    <label for="username">{{'USER.USERNAME' | translate}}</label>
+                    <input id="username" class="form-control" formControlName="username" [attr.readonly]="userForm.get('id').value.toString() !== '0' ? 'readonly' : null">
+                </div>
+                <!-- Password -->
+                <div class="form-group col-md-6 required">
+                    <label for="pwd">{{'USER.PASSWORD' | translate}}</label>
+                    <input type="password" id="pwd" class="form-control" formControlName="password" [attr.readonly]="userForm.get('id').value.toString() !== '0' ? 'readonly' : null">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    <div class="input-group input-group-sm">
+                        <label class="input-group-addon" for="associated">{{'USER.ASSOCIATED_ACCOUNT' | translate}}</label>
+                        <input type="text" id="associated" formControlName="fullname"
+                        [typeahead]="dataSource"
+                        (typeaheadLoading)="changeTypeaheadLoading($event)"
+                        (typeaheadNoResults)="changeTypeaheadNoResults($event)"
+                        (typeaheadOnSelect)="typeaheadOnSelect($event)"            
+                        [typeaheadScrollable]="true"
+                        [typeaheadOptionsInScrollableView]="5"
+                        typeaheadOptionField="fullname"
+                        placeholder="Person loaded with timeout"
+                        class="form-control" autocomplete="off">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary" (click)="clearAssociated()">Clear</button>
+                        </span>
+                    </div>
+                    <small *ngIf="typeaheadLoading===true">Loading</small>
+                    <small *ngIf="typeaheadNoResults===true">&#10060; No Results Found</small>
+                </div>
+                <div class="form-group col-md-4">
+                    <!-- <label for="person_id">{{'USER.PERSON_ID' | translate}}</label> -->
+                    <input id="person_id" type="number" class="form-control form-control-sm" formControlName="person_id" readonly>
+                </div>
+            </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button id="btnSubmit" type="button" class="btn btn-sm btn-primary" [disabled]="userForm.pristine || userForm.invalid" (click)="onSubmit()">{{'SHARED.SUBMIT' | translate}}</button>
+    <button type="button" class="btn btn-sm btn-primary" (click)="onCancel()">{{'SHARED.CANCEL' | translate}}</button>
+</div>

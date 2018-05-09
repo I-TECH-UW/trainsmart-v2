@@ -1,3 +1,4 @@
+<div>
 <div class="row">
   <div class="col-12 col-sm-12 col-md-12 text-center">
       <h2>{{'LOGIN.WELCOME' | translate}}</h2>
@@ -9,22 +10,56 @@
   <div class="card border-success">
     <h4 class="card-header bg-success">Login</h4>
     <div class="card-body">
-      <form [formGroup]="loginForm" novalidate>
+      <!-- ALERT -->
+      <ts-alert></ts-alert>
+      <!--  -->
+      <form [formGroup]="loginForm" (ngSubmit)="loginForm.valid && onSubmit()" novalidate>
         <div class="form-group">
           <label for="username">{{'LOGIN.USERNAME' | translate}}</label>
           <input type="email" class="form-control" formControlName="username" aria-describedby="userHelp" placeholder="{{'LOGIN.ENTER_USERNAME' | translate}}">
           <small id="userHelp" class="form-text text-muted">{{'LOGIN.NEVER_SHARE' | translate}}</small>
         </div>
+        <!-- <div
+          class="error"
+          *ngIf="loginForm.get('username').hasError('required') && loginForm.get('username').touched">
+          Username is required
+        </div> -->
         <div class="form-group">
           <label for="pwd">{{'LOGIN.PASSWORD' | translate}}</label>
           <input type="password" class="form-control" formControlName="password" placeholder="{{'LOGIN.ENTER_PASSWORD' | translate}}">
         </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">{{'LOGIN.SIGNIN' | translate}}</button>
+        </div>
       </form>
-      <button type="button" class="btn btn-primary float-right" [disabled]="loginForm.invalid" (click)="signIn()">{{'LOGIN.SIGNIN' | translate}}</button>
+      <!-- <button type="button" class="btn btn-primary float-right" [disabled]="loginForm.invalid" (click)="login()">{{'LOGIN.SIGNIN' | translate}}</button> -->
     </div>
     <div class="card-footer bg-transparent border-success">
       <a href="#" class="card-link float-right">{{'LOGIN.FORGOT_PASSWORD' | translate}}</a>
     </div>
   </div>
 </div>
+</div>
 
+<!--  <div class="login-page"  [@routerTransition]>
+    <div class="row justify-content-md-center">
+        <div class="col-md-4">
+            <img src="assets/images/logo.png" width="150px" class="user-avatar" />
+            <h1>SB Admin BS4 Angular5</h1>
+            <form role="form">
+                <div class="form-content">
+                    <div class="form-group">
+                        <input type="text" ng-model="name" class="form-control input-underline input-lg" id="" placeholder="Email">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" class="form-control input-underline input-lg" id="" placeholder="Password">
+                    </div>
+                </div>
+                <a class="btn rounded-btn" [routerLink]="['/dashboard']" > Log in </a>
+                &nbsp;
+                <a class="btn rounded-btn" [routerLink]="['/signup']">Register</a>
+            </form>
+        </div>
+    </div>
+</div> -->

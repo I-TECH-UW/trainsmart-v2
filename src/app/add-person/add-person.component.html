@@ -1,70 +1,71 @@
-<div class="modal-header bg-primary">
-  <h4 class="modal-title">{{'TRAINING.ADD_NEW_TRAINING' | translate}}</h4>
+<div class="modal-header text-white bg-primary">
+  <h4 *ngIf="!id; else elsetitle" class="modal-title">{{'PERSON.ADD_NEW_PERSON' | translate}}</h4>
+  <ng-template #elsetitle>
+    <h4 class="modal-title">{{'PERSON.EDIT_PERSON' | translate}}</h4>
+  </ng-template>
   <button type="button" class="close pull-right" aria-label="Close" (click)="onCancel()">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 <div class="modal-body">
-  <form [formGroup]="personForm" novalidate>
-    <div class="form-row">
-      <div class="form-group col-md-12">
-        <div>
-          <label class="custom-control custom-radio custom-control-inline" *ngFor="let option of activeList">
-            <input type="radio" value="{{option.id}}" formControlName="gender_id" class="custom-control-input">
-            <span class="custom-control-indicator"></span>
-            <span class="custom-control-description">{{option.name}}</span>
-          </label>
+  <form [formGroup]="personForm" autocomplete="off" novalidate>
+    <!-- Tabs -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="general-person-tab" data-toggle="tab" href="#general-person" role="tab" aria-controls="general-person" aria-selected="true">General</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="qualification-tab" data-toggle="tab" href="#qualification" role="tab" aria-controls="qualification" aria-selected="false">Qualification</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Action</a>
+        <div class="dropdown-menu person-activity">
+          <a class="dropdown-item" (click)="onViewTrainingsParticipatedClicked()">View Trainings Participated</a>
+          <a class="dropdown-item" (click)="onViewTrainingsFacilitatedClicked()">View Trainings Facilitated</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="onViewCertificatesReceived()">View Certificates Received</a>
         </div>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="general-person" role="tabpanel" aria-labelledby="general-person-tab">
+        
+        <app-add-person-general [form]="personForm" 
+                  [activeList]="activeList" 
+                  [titleList]="titleList" 
+                  [suffixList]="suffixList" 
+                  [genderList]="genderList">
+        </app-add-person-general>
+        
+      </div>
+      <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+
+        <app-add-person-contact [form]="personForm"
+                                [display]="display">
+        </app-add-person-contact>
+
+      </div>
+      <div class="tab-pane fade" id="qualification" role="tabpanel" aria-labelledby="qualification-tab">
+
+        <app-add-person-qualification 
+          [form]="personForm" 
+          [qualificationList]="qualificationList"
+          [primaryResponsibilityList]="primaryResponsibilityList"
+          [secondaryResponsibilityList]="secondaryResponsibilityList"
+          [reasonAttendingList]="reasonAttendingList">
+        </app-add-person-qualification>
+
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-group col-md-4">
-        <label for="title">{{'PERSON.TITLE' | translate}}</label>
-        <select id="title" tooltip="" tooltip-placement="top" class="form-control custom-select" formControlName="title_option_id" required>
-          <option value="" selected="selected">--{{ 'SHARED.SELECT' | translate }}--</option>
-          <option *ngFor="let option of titleList" value="{{option.id}}">{{option.name}}</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group col-md-4">
-        <label for="firstname">{{'PERSON.FIRST_NAME' | translate}}</label>
-        <input id="firstname" tooltip="" tooltip-placement="top" type="text" class="form-control" formControlName="first_name" required>
-      </div>
-      <div class="form-group col-md-4">
-        <label for="middlename">{{'PERSON.MIDDLE_NAME' | translate}}</label>
-        <input id="middlename" tooltip="" tooltip-placement="top" type="text" class="form-control" formControlName="middle_name" >
-      </div>
-      <div class="form-group col-md-4">
-        <label for="lastname">{{'PERSON.LAST_NAME' | translate}}</label>
-        <input id="lastname" tooltip="" tooltip-placement="top" type="text" class="form-control" formControlName="last_name" required>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group col-md-4">
-        <label for="title">{{'PERSON.SUFFIX' | translate}}</label>
-        <select id="title" tooltip="" tooltip-placement="top" class="form-control custom-select" formControlName="title_option_id" required>
-          <option value="" selected="selected">--{{ 'SHARED.SELECT' | translate }}--</option>
-          <option *ngFor="let option of suffixList" value="{{option.id}}">{{option.name}}</option>
-        </select>
-      </div>
-      <div class="form-group col-md-4">
-        <div class="custom-controls-stacked">
-          <label class="custom-control custom-radio" *ngFor="let option of genderList">
-            <input type="radio" value="{{option.id}}" formControlName="gender_id" class="custom-control-input">
-            <span class="custom-control-indicator"></span>
-            <span class="custom-control-description">{{'SHARED.' + option.name | uppercase | translate}}</span>
-          </label>
-        </div>
-      </div>
-      <div class="form-group col-md-4">
-        <label for="nationalid">{{'PERSON.NATIONAL_ID' | translate}}</label>
-        <input id="nationalid" tooltip="" tooltip-placement="top" type="text" class="form-control" formControlName="national_id" required>
-      </div>
-    </div>
+    <!-- End Tabs -->
+
+    <!-- <pre>{{ personForm.value | json }}</pre> -->
   </form>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-primary" [disabled]="personForm.invalid" (click)="onSubmit()">{{'SHARED.SUBMIT' | translate}}</button>
+  <button type="button" class="btn btn-primary" [disabled]="personForm.pristine || personForm.invalid" (click)="onSubmit()">{{'SHARED.SUBMIT' | translate}}</button>
   <button type="button" class="btn btn-primary" (click)="onCancel()">{{'SHARED.CANCEL' | translate}}</button>
 </div>

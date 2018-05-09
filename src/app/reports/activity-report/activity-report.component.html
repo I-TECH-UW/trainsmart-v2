@@ -1,0 +1,21 @@
+<div class="container-fluid">
+  <div class="row my-3">
+    <div class="col-md-12">
+      <div class="dropdown">
+        <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="report_1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Print Activity Report
+        </button>
+        <div class="dropdown-menu" aria-labelledby="report_1">
+          <button class="dropdown-item" type="button" (click)="activityReport(0)">Popup</button>
+          <button class="dropdown-item" type="button" (click)="activityReport(1)">Embeded</button>
+          <button class="dropdown-item" type="button" (click)="activityReport(2)">Download</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div [innerHTML]="innerHtml"></div>
+    </div>
+  </div>
+</div>

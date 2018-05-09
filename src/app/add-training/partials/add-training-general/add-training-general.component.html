@@ -1,0 +1,169 @@
+<form [formGroup]="form" autocomplete="off" novalidate>
+  <div class="form-row" >
+    <!-- Training Classification -->
+    <div *ngIf="display.display_training_category" class="form-group col-md-6 required">
+      <label for="categoryoption">{{'TRAINING.TRAINING_CLASSIFICATION' | translate}}</label>
+      <select id="categoryoption" tooltip="" tooltip-placement="top" class="form-control custom-select" formControlName="training_category_option_id" required>
+        <option value="" [selected]="true">--{{ 'HOME.SELECT' | translate }}--</option>
+        <option *ngFor="let option of categoryoptions" value="{{option.id}}">{{option.name}}</option>
+      </select><!-- form.controls.training_category_option_id -->
+      <!-- <app-show-errors [control]="form.get('training_category_option_id')"></app-show-errors> -->
+    </div>
+    <!-- TRAINING TITLE -->
+    <div class="form-group col-md-6 required">
+      <label for="subcategoryoption">{{'TRAINING.TRAINING_TITLE' | translate}}</label>
+      <select id="subcategoryoption" class="form-control custom-select" formControlName="training_sub_category_option_id" required>
+        <option value="" [selected]="true">--{{ 'HOME.SELECT' | translate }}--</option>
+        <option *ngFor="let option of filteredsubcategoryoptions" value="{{option.id}}">{{option.name}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <!-- TRAINING SUB-TITLE -->
+    <div class="form-group col-md-8 required">
+      <label for="titleoption">{{'TRAINING.TRAINING_SUB_TITLE' | translate}}</label>
+      <select id="titleoption" class="form-control custom-select" formControlName="training_title_option_id" required>
+        <option value="" [selected]="true">--{{ 'HOME.SELECT' | translate }}--</option>
+        <option *ngFor="let option of filteredtitleoptions" value="{{option.id}}">{{option.name}}</option>
+      </select>
+    </div>
+    <!-- CPD Points - Tied to the training-sub-title essentially training_title table (READONLY) -->
+    <div class="form-group col-md-4">
+      <label for="cpd">{{'TRAINING.CPD' | translate}}</label>
+      <input type="number" id="cpd" class="form-control" formControlName="cpd" [attr.readonly]="cpdreadonly ? 'readonly' : null">
+    </div>
+  </div>
+  <div class="form-row">
+    <!-- IF -->
+    <div *ngIf="display.display_training_start_date && display.display_end_date; else elseBlock" class="form-group col-md-6">
+      <label for="tdates">{{'TRAINING.TRAINING_DATE' | translate}}</label>
+      <input id="tdates" tooltip="" tooltip-placement="top" class="form-control" #drp="bsDaterangepicker" bsDaterangepicker formControlName="bsrangevalue" required>
+    </div>
+    <!-- ELSE -->
+    <ng-template #elseBlock>
+      <div *ngIf="display.display_training_start_date " class="form-group col-md-6 required">
+        <label for="startdate">{{ 'TRAINING.START_DATE' | translate }}</label>
+        <div class="input-group">
+          <input id ="startdate"
+                type="text" 
+                class="form-control"
+                placement = "top"
+                #dp="bsDatepicker"
+                bsDatepicker
+                formControlName="training_start_date" 
+                required>
+          <span class="input-group-btn">
+            <button class="btn btn-primary" type="button" (click)="dp.toggle()"><i class="fa fa-calendar-o" aria-hidden="true"></i></button>
+          </span>
+        </div>
+      </div>
+    </ng-template>
+    <!-- END IF -->
+    <div *ngIf="display.display_training_length" class="form-group col-md-4 required">
+      <label for="tlength">{{'TRAINING.TRAINING_LENGTH' | translate}}</label>
+      <input id="tlength" tooltip="" tooltip-placement="top" type="number" class="form-control" formControlName="training_length_value" required>
+    </div>
+    <div class="form-group col-md-2 required">
+        <div class="custom-controls-stacked">
+            <label class="custom-control custom-radio" *ngFor="let option of trainingintervaloptions">
+              <input type="radio" value="{{option.value}}" formControlName="training_length_interval" class="custom-control-input">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description">{{'TRAINING.' + option.name | uppercase | translate}}</span>
+            </label>
+          </div>
+    </div>
+  </div>
+  <div class="form-row">
+    <div *ngIf="display.display_training_level" class="form-group col-md-6 required">
+      <label for="traininglevel">{{'TRAINING.TRAINING_LEVEL' | translate}}</label>
+      <select id="traininglevel" tooltip="" tooltip-placement="top" class="form-control custom-select" formControlName="training_level_option_id" required>
+        <option value="" [selected]="true">--{{ 'HOME.SELECT' | translate }}--</option>
+        <option *ngFor="let option of trainingleveloptions" value="{{option.id}}">{{option.name}}</option>
+      </select>
+    </div>
+    <div class="form-group col-md-6 required">
+      <label for="organizerid">{{'TRAINING.TRAINING_SPONSOR' | translate}}</label>
+      <select id="organizerid" class="form-control custom-select" formControlName="training_organizer_option_id" required>
+        <option value="" [selected]="true">--{{ 'HOME.SELECT' | translate }}--</option>
+        <option *ngFor="let option of trainingorganizeroptions" value="{{option.id}}">{{option.name}}</option>
+      </select><!-- [attr.selected]="option.isdefault == 1 ? 'selected' : null" -->
+    </div>
+  </div>
+  <div class="form-row">
+    <div *ngIf="display.display_training_location" class="form-group col-md-6 required">
+      <label for="locationtype">{{'TRAINING.TRAINING_LOCATION_TYPE' | translate}}</label>
+      <select id="locationtype" class="form-control custom-select" formControlName="training_location_type" required>
+        <option value="" [selected]="true">--{{ 'HOME.SELECT' | translate }}--</option>
+        <option *ngFor="let type of locationtype" value="{{type.id}}">{{type.name}}</option>
+      </select>
+    </div>
+    <div *ngIf="display.module_unknown_participants_enabled" class="form-check col-md-6 align-self-center">
+      <label class="form-check-label custom-control custom-checkbox">
+          <input type="checkbox" formControlName="has_known_participants" tooltip="" tooltip-placement="top" class="form-check-input custom-control-input">
+          <span class="custom-control-indicator"></span>
+          <span class="custom-control-description">{{'TRAINING.PARTICIPANTS_ARE_KNOWN' | translate}}</span>
+        </label>
+    </div> 
+  </div><!-- form.controls.training_location_type.value -->
+  <div [ngSwitch]="form.get('training_location_type').value" class="form-row">
+    <ng-container *ngSwitchCase="1"> <!-- *ngIf="form.controls.training_location_type.value == 1" -->
+      <div class="form-group col-md-8 required">
+        <label for="mfl_name">{{'TRAINING.MEDICAL_FACILITY_LIST' | translate}}</label>
+        <input type="text" id="mfl_name" formControlName="mfl_name"
+        [typeahead]="dataSource"
+        (typeaheadLoading)="changeTypeaheadLoading($event)"
+        (typeaheadNoResults)="changeTypeaheadNoResults($event)"
+        (typeaheadOnSelect)="typeaheadOnSelect($event)"            
+        [typeaheadScrollable]="true"
+        [typeaheadOptionsInScrollableView]="5"
+        typeaheadOptionField="name"
+        placeholder="MFL loaded with timeout"
+        class="form-control" required>
+        <small *ngIf="typeaheadLoading===true">Loading</small>
+        <small *ngIf="typeaheadNoResults===true">&#10060; No Results Found</small>
+      </div>
+      <div class="form-group col-md-4">
+        <label for="training_location_id">{{'TRAINING.MFL_CODE' | translate}}</label>
+        <input id="training_location_id" type="number" class="form-control" formControlName="training_location_id" readonly>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="2"><!-- *ngIf="form.controls.training_location_type.value == 2" -->
+      <div class="form-group col-md-6 required">
+        <label for="other_location_region">{{'TRAINING.OTHER_LOCATION_REGION' | translate}}</label>
+        <select id="other_location_region" class="form-control custom-select" formControlName="other_location_region" required>
+          <option *ngFor="let location of locations" value="{{location.id}}">{{location.name}}</option>
+        </select>
+      </div>
+      <div class="form-group col-md-6 required">
+        <label for="other_location">{{'TRAINING.OTHER_LOCATION' | translate}}</label>
+        <input id="other_location" class="form-control" formControlName="other_location" required>
+      </div> 
+    </ng-container>
+  </div>
+  <!-- <div *ngIf="display.display_training_pepfar" class="card" formArrayName="pepfar">
+    <div class="card-header">
+      <span>{{'TRAINING.PEPFAR_INDICATORS' | translate}}</span>
+    </div>
+    <div class="card-body">
+      <div *ngFor="let option of trainingForm.controls.pepfar.controls;let i = index;" [formGroupName]="i">
+        <pepfar-option [group]="trainingForm.controls.pepfar.controls[i]" [options]='pepfaroptions' [groupid]="i" (onremove)="removePepfarIndicator($event)"></pepfar-option>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button type="button" class="btn btn-primary float-right" (click)="addPepfarIndicator()">{{'TRAINING.ADD_PEPFAR_INDICATOR' | translate}}</button>
+    </div>
+  </div> -->
+  <!-- <div class="form-row" *ngIf="display.display_training_refresher">
+      <label>{{'TRAINING.REFRESHER_COURSE' | translate}}</label>
+  </div>
+  <div class="form-row" *ngIf="display.display_funding_options">
+      <label>{{'TRAINING.FUNDING' | translate}}</label>
+  </div>
+  <!-- NOT IMPLEMENTED display_training_got_curric/GOT CURRICULUM --
+  <div class="form-row" *ngIf="display.display_training_got_comment">
+      <div class="form-group col-md-12">
+          <label for="fcomment">{{'TRAINING.FUNDER_COMMENT' | translate}}</label>
+          <textarea id="fcomment" rows="5" cols="10" class="form-control" formControlName="fundercomment" tooltip="display_training_got_comment" tooltip-placement="top"></textarea>  
+      </div>
+  </div> -->
+</form>

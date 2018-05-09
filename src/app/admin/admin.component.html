@@ -1,0 +1,16 @@
+<div class="card my-2 p-0">
+  <div class="card-header header">
+    <h1 class="m-2">{{ 'NAV.SETTINGS' | translate }}</h1>
+  </div>
+</div>
+<ul class="nav nav-tabs" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link" [routerLink]="['user']" routerLinkActive="active">User</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" [routerLink]="['facility']" routerLinkActive="active">Facility</a>
+  </li>
+</ul>
+<div role="tabpanel" class="tab-content tab-pane">
+  <router-outlet></router-outlet>
+</div>

@@ -1,8 +1,8 @@
 <button type="button" class="btn btn-sm btn-success" (click)="process(1)" [disabled]="training.statusid"
         tooltip="{{ 'SHARED.TT_APPROVE_RECORD' | translate }}" tooltip-placement="top">
-    <i class="fa fa-thumbs-up fa-lg"></i> {{ 'SHARED.APPROVE' | translate }}
+    <i class="fa fa-thumbs-up fa-sm"></i> <!-- {{ 'SHARED.APPROVE' | translate }} -->
 </button>
 <button type="button" class="btn btn-sm btn-warning" (click)="process(2)" [disabled]="training.statusid"
         tooltip="{{ 'SHARED.TT_REJECT_RECORD' | translate }}" tooltip-placement="top">
-    <i class="fa fa-thumbs-down fa-lg"></i> {{ 'SHARED.REJECT' | translate }}
+    <i class="fa fa-thumbs-down fa-sm"></i> <!-- {{ 'SHARED.REJECT' | translate }} -->
 </button>

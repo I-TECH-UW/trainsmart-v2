@@ -1,0 +1,100 @@
+<div class="container-fluid">
+  <form [formGroup]="searchForm" autocomplete="off" novalidate>
+    <div class="form-row">
+      <!-- Classification/Program -->
+      <div class="form-group col-md-4">
+        <label for="categoryoption">{{'TRAINING.TRAINING_CLASSIFICATION' | translate}}</label>
+        <select id="categoryoption" class="form-control custom-select" formControlName="training_category_option_id" >
+          <option value="" [selected]="true">--{{ 'HOME.SELECT' | translate }}--</option>
+          <option *ngFor="let option of categoryoptions" value="{{option.id}}">{{option.name}}</option>
+        </select>
+      </div>
+      <!-- Title -->
+      <div class="form-group col-md-4">
+        <label for="subcategoryoption">{{'TRAINING.TRAINING_TITLE' | translate}}</label>
+        <select id="subcategoryoption" class="form-control custom-select" formControlName="training_sub_category_option_id">
+          <option value="" [selected]="true">--{{ 'HOME.SELECT' | translate }}--</option>
+          <option *ngFor="let option of filteredsubcategoryoptions" value="{{option.id}}">{{option.name}}</option>
+        </select>
+      </div>
+      <!-- Sub-Title -->
+      <div class="form-group col-md-4">
+        <label for="titleoption">{{'TRAINING.TRAINING_SUB_TITLE' | translate}}</label>
+        <select id="titleoption" class="form-control custom-select" formControlName="training_title_option_id">
+          <option value="" [selected]="true">--{{ 'HOME.SELECT' | translate }}--</option>
+          <option *ngFor="let option of filteredtitleoptions" value="{{option.id}}">{{option.name}}</option>
+        </select>
+      </div>      
+    </div>
+    <!-- Row -->
+    <div class="form-row">
+      <!-- Sponsor -->
+      <div class="form-group col-md-4">
+        <label for="organizerid">{{'TRAINING.TRAINING_SPONSOR' | translate}}</label>
+        <select id="organizerid" class="form-control custom-select" formControlName="training_organizer_option_id">
+          <option value="" [selected]="true">--{{ 'HOME.SELECT' | translate }}--</option>
+          <option *ngFor="let option of trainingorganizeroptions" value="{{option.id}}">{{option.name}}</option>
+        </select>
+      </div>
+      <!-- Start Date -->
+      <div class="form-group col-md-4">
+        <label for="startdate">{{ 'TRAINING.START_DATE' | translate }}</label>
+        <div class="input-group">
+          <input id ="startdate"
+                type="text" 
+                class="form-control"
+                placement = "top"
+                #dp="bsDatepicker"
+                bsDatepicker
+                formControlName="training_start_date">
+          <span class="input-group-btn">
+            <button class="btn btn-primary" type="button" (click)="dp.toggle()"><i class="fa fa-calendar-o" aria-hidden="true"></i></button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </form>
+  <!-- R -->
+  <div class="row mb-3">
+      <div class="col-auto mr-auto">
+          <button type="button" class="btn btn-lg btn-primary mr-2" (click)="trainingReport(0,0)">
+              <img src="./assets/icons/html.png" width="24px"> Print To Html
+          </button> 
+          <button class="btn btn-lg btn-warning dropdown-toggle mr-2" type="button" id="report_1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <img src="./assets/icons/pdf.png" width="24px"> Export To PDF
+          </button>
+          <div class="dropdown-menu" aria-labelledby="report_1">
+            <button class="dropdown-item" type="button" (click)="trainingReport(1,0)">Popup</button>
+            <button class="dropdown-item" type="button" (click)="trainingReport(1,1)">Embeded</button>
+            <button class="dropdown-item" type="button" (click)="trainingReport(1,2)">Download</button>
+          </div>
+          <button type="button" class="btn btn-lg btn-success mr-2" (click)="trainingReport(2,0)">
+              <img src="./assets/icons/csv.png" width="24px"> Export To Excel
+          </button>            
+        </div>
+  </div>
+  <!-- R -->
+  <div *ngIf="innerHtml" class="row">
+    <div class="col-md-12">
+      <div [innerHTML]="innerHtml"></div>
+    </div>
+  </div>
+
+  <div *ngIf="displayTable" class="table-reponsive scrollable">
+    <table class="table table-striped">
+      <thead>
+        <tr class="bg-warning">
+          <th *ngFor="let item of displayTable.labels">{{item}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of displayTable.data | keys">
+          <td *ngFor="let item of row.value | keys">
+            {{item.value}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { MasterItem } from '../models/master-item';
+import { MasterItem } from '../shared';
 
 @Component({
   moduleId: module.id,

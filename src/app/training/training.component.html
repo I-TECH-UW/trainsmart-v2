@@ -1,88 +1,217 @@
-<section class="container-fluid" style="margin-top:20px;">
-  <div class="card">
-      <div class="card-header">
-        {{ 'NAV.TRAININGS' | translate }}
-      </div>
-      <div class="card-body">
-        <div class="row">
-          <form class="form-inline my-2 my-lg-0 col-auto" novalidate>
-            <label for="sizeInput" class="mr-sm-2">Show:</label>
-            <select id="sizeInput" type="text" class="form-control" >
-              <option value="10" selected>10</option>
-              <option value="25">25</option>
-              <option value="50">50</option>
-            </select>
-            <label class="ml-2">Entries</label>
-          </form>
-          
-          <div class="col-auto mr-auto">
-              <button type="button" class="btn btn-primary mr-2" (click)="addTraining()">{{ 'TRAINING.ADD_NEW_TRAINING' | translate }}</button>
-              <button type="button" class="btn btn-primary mr-2" (click)="refresh()">{{ 'SHARED.REFRESH' | translate }}</button>                 
-            </div>
-          <form class="form-inline my-2 my-lg-0 col-auto">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
-          <!-- <div class="col-md-3">
-            
-          </div> -->
-        </div>
-        <div>&nbsp;</div>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="table-responsive-sm">
-              <table id="myTable" class="table table-striped table-bordered table-hover table-sm">
-                <caption>List of Trainings</caption>
-                <thead class="thead-dark">
-                  <tr>
-                    <th>{{ 'TRAINING_LIST.ID' | translate }}</th>
-                    <th>{{ 'TRAINING_LIST.TRAINING_TITLE' | translate }}</th>
-                    <th>{{ 'TRAINING_LIST.START_DATE' | translate }}</th>
-                    <th>{{ 'TRAINING_LIST.END_DATE' | translate }}</th>
-                    <th>{{ 'TRAINING_LIST.CREATED_BY' | translate }}</th>
-                    <th>{{ 'TRAINING_LIST.STATUS' | translate }}</th>
-                    <th>{{ 'SHARED.ACTION' | translate }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let training of trainings; let i = index;" [ngStyle]="{ 'color': getColorCode(training.statusid)}">
-                    <td tooltip="{{training.id}}" tooltip-placement="top">{{ (i + 1) + (currentPage-1) * itemsPerPage }}</td>
-                    <td>{{ training.trainingtitle }}</td>
-                    <td>{{ training.startdate }}</td>
-                    <td>{{ training.enddate }}</td>
-                    <td>{{ training.createdby }}</td>
-                    <td>{{ training.status }}</td>
-                    <td>
-                      <app-approve [training]="training" (approval)="approve($event)"></app-approve>
-                      <button type="button" class="btn btn-sm btn-info" (click)="addTraining(training.id)"
-                            tooltip="{{ 'SHARED.TT_EDIT_RECORD' | translate }}" tooltip-placement="top">
-                          <i class="fa fa-pencil-square-o fa-lg"></i> {{ 'SHARED.EDIT' | translate }}
-                      </button>
-                      <button type="button" class="btn btn-sm btn-danger" (click)="delete(training)"
-                            tooltip="{{ 'SHARED.TT_DELETE_RECORD' | translate }}" tooltip-placement="top">
-                          <i class="fa fa-trash-o fa-lg"></i> {{ 'SHARED.DELETE' | translate }}
-                      </button>        
-                    </td>
-                  </tr>
-                </tbody>
-              </table>  
-            </div>
-          </div> 
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-            <pagination 
-              [totalItems]="totalItems" 
-              [(ngModel)]="currentPage" 
-              [maxSize]="maxSize" 
-              class="pull-right pagination-md" 
-              [boundaryLinks]="true" 
-              [rotate]="false" 
-              [itemsPerPage]="itemsPerPage"
-              (pageChanged) = "pageChanged($event)"
-              (numPages)="numPages = $event"></pagination>
-          </div>
-        </div>
-      </div>
+<div class="card my-2 p-0">
+  <div class="card-header header">
+    <h1 class="m-2">{{ 'NAV.TRAININGS' | translate }}</h1>
   </div>
-</section>
+</div>
+<div style="margin: auto; max-width: 100%; margin-bottom: 5px;">
+  <div class="row">          
+    <div class="col-auto mr-auto">
+      <button *ngIf="auth.canAdd(authUser)" type="button" class="btn btn-primary" (click)="addTraining()">{{ 'TRAINING.ADD_NEW_TRAINING' | translate }}</button>
+      <button type="button" class="btn btn-primary" (click)="openAdvancedSearch(searchTemplate)">{{ 'SHARED.ADVANCED_SEARCH' | translate }}</button>
+      <button type="button" class="btn btn-primary" (click)="refresh()">{{ 'SHARED.REFRESH' | translate }}</button>                 
+    </div>
+
+    <form [formGroup]="searchForm" class="form-inline my-lg-0 col-auto" novalidate>
+      <input formControlName="searchText" class="form-control" type="search" placeholder="Search" aria-label="Search">
+    </form>
+  </div>
+  <div class="table-responsive">
+    <data-table class="table table-bordered table-hover table-sm" id="persons-grid"
+      headerTitle=""
+      [items]="items"
+      [itemCount]="itemCount"
+      (reload)="reloadItems($event)"
+    
+      [pagination]="true"
+      [indexColumn]="true"
+      [indexColumnHeader]="'#'"
+      [expandableRows]="true"
+      
+      [rowTooltip]="rowTooltip">
+        <ng-template #dataTableExpand let-item="item">
+          <ng-container *ngIf="item.training_objectives">
+            <h4 class="text-muted">Objectives of the training</h4>
+            <div [textContent]="item.training_objectives" style="padding: 5px; color: gray"></div>
+            <h4 class="text-muted">Brief Description of how the training was conducted</h4>
+            <div [textContent]="item.training_conduct" style="padding: 5px; color: gray"></div>
+            <h4 class="text-muted">Observations and recommendations</h4>
+            <div [textContent]="item.training_recommendations" style="padding: 5px; color: gray"></div>
+          </ng-container>
+          <ng-container *ngIf="!item.training_objectives">
+            <div class="text-danger">Training Objectives, Conduct and Description is not available</div>
+          </ng-container>
+        </ng-template>
+        <data-table-column
+          [header]="'SHARED.VIEW' | translate"
+          [width]="'75px'">
+          <ng-template #dataTableCell let-item="item">
+            <a (click)="view(item.id)" role="button"><i class="fa fa-eye fa-sm"></i></a>
+          </ng-template>
+        </data-table-column>
+        <data-table-column
+          [property]="'trainingtitle'"
+          [header]="'TRAINING_LIST.TRAINING_TITLE' | translate"
+          [sortable]="true"
+          [resizable]="true">
+        </data-table-column>
+        <data-table-column
+          [property]="'funding_source'"
+          [header]="'TRAINING_LIST.FUNDING_SOURCE' | translate"
+          [sortable]="true"
+          [resizable]="true">
+        </data-table-column>
+        <data-table-column
+          [property]="'startdate'"
+          [header]="'TRAINING_LIST.START_DATE' | translate"
+          [sortable]="true"
+          [resizable]="false"
+          [width]="'190px'">
+        </data-table-column>
+        <data-table-column
+          [property]="'venue'"
+          [header]="'TRAINING_LIST.VENUE' | translate"
+          [sortable]="true"
+          [resizable]="true"
+          [visible]="false">
+        </data-table-column>
+        <data-table-column
+          [property]="'mentors'"
+          [header]="'TRAINING_LIST.MENTORS' | translate"
+          [sortable]="false"
+          [resizable]="false"
+          [visible]="false">
+        </data-table-column>
+        <data-table-column
+          [property]="'mentees'"
+          [header]="'TRAINING_LIST.MENTEES' | translate"
+          [sortable]="false"
+          [resizable]="false"
+          [visible]="false">
+        </data-table-column>
+        <data-table-column
+          [property]="'status'"
+          [header]="'TRAINING_LIST.STATUS' | translate"
+          [sortable]="true"
+          [resizable]="false"
+          [width]="'100px'">
+        </data-table-column>
+        <data-table-column
+          [property]="'completed'"
+          [header]="'TRAINING_LIST.COMPLETED' | translate"
+          [sortable]="true"
+          [resizable]="false"
+          [width]="'120px'">
+        </data-table-column>
+        <data-table-column
+          [property]="'certified'"
+          [header]="'TRAINING_LIST.CERTIFIED' | translate"
+          [sortable]="true"
+          [resizable]="true"
+          [visible]="false">
+        </data-table-column>
+        <data-table-column *ngIf="authUser.roles.admin || authUser.roles.sitecoordinator" 
+            [header]="'SHARED.ACTION' | translate"
+            [resizable]="false"
+            [width]="'480px'">
+            <ng-template #dataTableCell let-item="item">
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button *ngIf="auth.canComplete(authUser)" type="button" class="btn btn-sm btn-primary" (click)="complete(item)"
+                      tooltip="" tooltip-placement="top" [disabled]="item.is_approved !== 1">
+                  <i class="fa fa-check-circle fa-sm"></i> {{ 'SHARED.COMPLETE' | translate }}
+                </button>
+                <button *ngIf="auth.canScore(authUser)" type="button" class="btn btn-sm btn-secondary" (click)="score(item)"
+                        tooltip="" tooltip-placement="top" [disabled]="item.is_approved !== 1">
+                  <i class="fa fa-star fa-sm"></i> {{ 'SHARED.SCORE' | translate }}
+                </button>
+                <button *ngIf="auth.canApprove(authUser)" type="button" class="btn btn-sm btn-success" (click)="process(1, item)" [disabled]="item.is_approved"
+                        tooltip="" tooltip-placement="top">
+                  <i class="fa fa-thumbs-up fa-sm"></i> {{ 'SHARED.APPROVE' | translate }}
+                </button>
+                <button *ngIf="auth.canApprove(authUser)" type="button" class="btn btn-sm btn-warning" (click)="process(2, item)" [disabled]="item.is_approved"
+                        tooltip="" tooltip-placement="top">
+                  <i class="fa fa-thumbs-down fa-sm"></i> {{ 'SHARED.REJECT' | translate }}
+                </button>
+                <button *ngIf="auth.canEdit(authUser)" type="button" class="btn btn-sm btn-info" (click)="addTraining(item.id)"
+                        tooltip="" tooltip-placement="top">
+                  <i class="fa fa-pencil-square-o fa-sm"></i> {{ 'SHARED.EDIT' | translate }}
+                </button>
+                <button *ngIf="auth.canDelete(authUser)" type="button" class="btn btn-sm btn-danger" (click)="delete(item)"
+                        tooltip="" tooltip-placement="top" [disabled]="item.is_approved || item.is_completed">
+                  <i class="fa fa-trash-o fa-sm"></i> {{ 'SHARED.DELETE' | translate }}
+                </button>    
+              </div>
+            </ng-template>
+        </data-table-column>
+    </data-table>
+  </div>
+</div>
+
+
+<!-- Advanced Search Template -->
+<ng-template #searchTemplate>
+  <div class="modal-header text-white bg-primary">
+    <h4 class="modal-title pull-left">{{ 'SHARED.ADVANCED_SEARCH' | translate }}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="advancedForm" novalidate>
+      <div *ngIf="display.display_training_category" class="form-group">
+        <label for="categoryoption">{{'TRAINING.TRAINING_CLASSIFICATION' | translate}}</label>
+        <select id="categoryoption" class="form-control custom-select" formControlName="training_category_option_id">
+          <option value="" [selected]="true">--{{ 'HOME.SELECT' | translate }}--</option>
+          <option *ngFor="let option of categoryoptions" value="{{option.id}}">{{option.name}}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="subcategoryoption">{{'TRAINING.TRAINING_TITLE' | translate}}</label>
+        <select id="subcategoryoption" class="form-control custom-select" formControlName="training_sub_category_option_id">
+          <option value="" [selected]="true">--{{ 'HOME.SELECT' | translate }}--</option>
+          <option *ngFor="let option of filteredsubcategoryoptions" value="{{option.id}}">{{option.name}}</option>
+        </select>
+      </div>
+      <div *ngIf="display.display_training_topic" class="form-group">
+        <label for="titleoption">{{'TRAINING.TRAINING_SUB_TITLE' | translate}}</label>
+        <select id="titleoption" class="form-control custom-select" formControlName="training_title_option_id">
+          <option value="" [selected]="true">--{{ 'HOME.SELECT' | translate }}--</option>
+          <option *ngFor="let option of filteredtitleoptions" value="{{option.id}}">{{option.name}}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="organizerid">{{'TRAINING.TRAINING_SPONSOR' | translate}}</label>
+        <select id="organizerid" class="form-control custom-select" formControlName="training_organizer_option_id">
+          <option value="" [selected]="true">--{{ 'HOME.SELECT' | translate }}--</option>
+          <option *ngFor="let option of trainingorganizeroptions" value="{{option.id}}">{{option.name}}</option>
+        </select>
+      </div>
+      <div *ngIf="display.display_training_level" class="form-group">
+        <label for="methodid">{{'TRAINING.TRAINING_LEVEL' | translate}}</label>
+        <select id="methodid" class="form-control custom-select" formControlName="training_level_option_id">
+          <option value="" [selected]="true">--{{ 'HOME.SELECT' | translate }}--</option>
+          <option *ngFor="let option of trainingleveloptions" value="{{option.id}}">{{option.name}}</option>
+        </select>
+      </div>
+      <div *ngIf="display.display_training_start_date " class="form-group">
+        <label for="startdate">{{ 'TRAINING.START_DATE' | translate }}</label>
+        <div class="input-group">
+          <input id ="startdate"
+                type="text" 
+                class="form-control"
+                placement = "top"
+                #dp="bsDatepicker"
+                bsDatepicker
+                formControlName="training_start_date" 
+                required>
+          <span class="input-group-btn">
+            <button class="btn btn-primary" type="button" (click)="dp.toggle()"><i class="fa fa-calendar-o" aria-hidden="true"></i></button>
+          </span>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="search()">{{ 'SHARED.SEARCH' | translate}}</button>
+    <button type="button" class="btn btn-default" (click)="cancelSearch()">{{ 'SHARED.CANCEL' | translate}}</button>
+  </div>
+</ng-template>

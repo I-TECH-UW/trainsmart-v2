@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { TrainingList } from '../models/training-list';
+import { TrainingList } from '../shared';
 
 @Component({
   selector: 'app-approve',

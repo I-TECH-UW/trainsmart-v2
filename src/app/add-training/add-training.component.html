@@ -1,134 +1,77 @@
-<div class="modal-header bg-primary">
-  <h4 class="modal-title">{{'TRAINING.ADD_NEW_TRAINING' | translate}}</h4>
+<div class="modal-header text-white bg-primary">
+  <h4 *ngIf="!id; else elsetitle" class="modal-title">{{'TRAINING.ADD_NEW_TRAINING' | translate}}</h4>
+  <ng-template #elsetitle>
+    <h4 class="modal-title">{{'TRAINING.EDIT_TRAINING' | translate}}</h4>
+  </ng-template>
   <button type="button" class="close pull-right" aria-label="Close" (click)="onCancel()">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 <div class="modal-body">
+  <div *ngIf="training && (training.is_completed === 1 || training.is_approved === 2)" class="alert alert-danger" role="alert">
+    The training has been marked as {{ training.is_approved === 2 ? 'rejected'  : 'completed'}}. The details cannot be edited.
+  </div>
   <form [formGroup]="trainingForm" novalidate>
     <div class="form-row">
-      <div *ngIf="display.display_training_category" class="form-group col-md-6">
-        <label for="programarea">{{'TRAINING.PROGRAM_AREA' | translate}}</label>
-        <select id="programarea" tooltip="display_training_category" tooltip-placement="top" class="form-control custom-select" formControlName="training_category_option_id" required>
-          <option value="" selected="selected">--{{ 'HOME.SELECT' | translate }}--</option>
-          <option *ngFor="let option of categoryoptions" value="{{option.id}}">{{option.name}}</option>
-        </select>
-      </div>
-      <div class="form-group col-md-6 required">
-        <label for="title">{{'TRAINING.TRAINING_TITLE' | translate}}</label>
-        <div class="input-group">
-          <select id="title" class="form-control custom-select" formControlName="training_title_option_id">
-            <option value="" selected>--{{ 'HOME.SELECT' | translate }}--</option>
-            <option *ngFor="let option of filteredcategorytitleoptions" value="{{option.id}}">{{option.name}}</option>
-          </select>
-          <span class="input-group-btn">
-            <button class="btn btn-primary" type="button" (click)="openAddTrainingTitleModal()"><i class="fa fa-plus" aria-hidden="true"></i></button>
-          </span>
-        </div>
+      <div class="col-md-12">
+        <span class="float-right mr-2">Total Trainers: {{getTrainers()}}</span>
+        <span class="float-right mr-2">Total Participants: {{getParticipants()}}</span>
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-group col-md-6">
-        <label for="tdates">{{'TRAINING.TRAINING_DATE' | translate}}</label>
-        <input id="tdates" tooltip="display_training_start_date && display_end_date" tooltip-placement="top" class="form-control" #drp="bsDaterangepicker" bsDaterangepicker formControlName="bsrangevalue" required>
+    <!-- Tabs -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">General</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="participants-tab" data-toggle="tab" href="#participants" role="tab" aria-controls="participants" aria-selected="false">Participants</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="trainers-tab" data-toggle="tab" href="#trainers" role="tab" aria-controls="trainers" aria-selected="false">Trainers</a>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
+        
+        <app-add-training-general 
+          [form]="trainingForm" 
+          [display]="display" 
+          [categoryoptions]="categoryoptions" 
+          [filteredsubcategoryoptions]="filteredsubcategoryoptions"
+          [filteredtitleoptions]="filteredtitleoptions"
+          [trainingorganizeroptions]="trainingorganizeroptions"
+          [trainingleveloptions]="trainingleveloptions"
+          [pepfaroptions]="pepfaroptions"
+          [locations]="locations" 
+          [trainingintervaloptions]="trainingintervaloptions"
+          [locationtype]="locationtype"
+          [cpdreadonly]="cpdreadonly">
+        </app-add-training-general>
+
       </div>
-      <div *ngIf="display.display_training_length" class="form-group col-md-4">
-        <label for="tlength">{{'TRAINING.TRAINING_LENGTH' | translate}}</label>
-        <input id="tlength" tooltip="display_training_length" tooltip-placement="top" type="number" class="form-control" formControlName="training_length_value" required>
+      <div class="tab-pane fade" id="participants" role="tabpanel" aria-labelledby="participants-tab">
+
+        <app-add-training-participant 
+          [form]="trainingForm" 
+          [idcollection]="idcollection" 
+          (event)="updateIDCollection($event)">
+        </app-add-training-participant>
+
       </div>
-      <div class="form-group col-md-2">
-          <div class="custom-controls-stacked">
-              <!-- <label class="custom-control custom-radio" *ngFor="let option of trainingintervaloptions">
-                <input type="radio"
-                      name="trainingintervalgroup" 
-                      [value]="option.id" 
-                      (change)="onSelectionChange(option)"  
-                      class="custom-control-input" 
-                      required>
-                <span class="custom-control-indicator"></span>
-                <span class="custom-control-description">{{'TRAINING.' + option.name.toUpperCase() | translate}}</span>
-              </label> -->
-              <label class="custom-control custom-radio" *ngFor="let option of trainingintervaloptions">
-                <input type="radio" value="{{option.value}}" formControlName="training_length_interval" class="custom-control-input">
-                <span class="custom-control-indicator"></span>
-                <span class="custom-control-description">{{'TRAINING.' + option.name | uppercase | translate}}</span>
-              </label>
-            </div>
+      <div class="tab-pane fade" id="trainers" role="tabpanel" aria-labelledby="trainers-tab">
+
+        <app-add-training-trainer
+          [form]="trainingForm" [idcollection]="idcollection" (event)="updateIDCollection($event)">
+        </app-add-training-trainer>
+
       </div>
     </div>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="organizerid">{{'TRAINING.TRAINING_ORGANIZER' | translate}}</label>
-          <div class="input-group">
-            <select id="organizerid" class="form-control custom-select" formControlName="training_organizer_option_id">
-              <option *ngFor="let option of trainingorganizeroptions" value="{{option.id}}"[attr.selected]="option.isdefault == 1 ? 'selected' : null">{{option.name}}</option>
-            </select>
-            <span class="input-group-btn">
-              <button class="btn btn-primary" type="button"><i class="fa fa-plus" aria-hidden="true"></i></button>
-            </span>
-          </div>
-        </div>
-        <div *ngIf="display.display_training_location" class="form-group col-md-6">
-          <label for="locationid">{{'TRAINING.TRAINING_LOCATION' | translate}}</label>
-          <div class="input-group">
-            <select id="locationid" tooltip="display_training_location" tooltip-placement="top" class="form-control custom-select" formControlName="training_location_id">
-              <option *ngFor="let location of locations" value="{{location.id}}">{{location.name}}</option>
-            </select>
-            <span class="input-group-btn">
-              <button class="btn btn-primary" type="button"><i class="fa fa-plus" aria-hidden="true"></i></button>
-            </span>
-          </div>
-        </div>
-    </div>
-    <div class="form-row">
-        <div *ngIf="display.display_training_level" class="form-group col-md-6">
-          <label for="methodid">{{'TRAINING.TRAINING_METHOD' | translate}}</label>
-          <div class="input-group">
-            <select id="methodid" tooltip="display_training_level" tooltip-placement="top" class="form-control custom-select" formControlName="training_level_option_id">
-              <option *ngFor="let option of trainingleveloptions" value="{{option.id}}">{{option.name}}</option>
-            </select>
-            <span class="input-group-btn">
-              <button class="btn btn-primary" type="button"><i class="fa fa-plus" aria-hidden="true"></i></button>
-            </span>
-          </div>
-        </div>
-        <div *ngIf="display.module_unknown_participants_enabled" class="form-check col-md-6 align-self-center">
-          <label class="form-check-label custom-control custom-checkbox">
-              <input type="checkbox" formControlName="has_known_participants" tooltip="onAdd && module_unknown_participants_enabled" tooltip-placement="top" class="form-check-input custom-control-input">
-              <span class="custom-control-indicator"></span>
-              <span class="custom-control-description">{{'TRAINING.PARTICIPANTS_ARE_KNOWN' | translate}}</span>
-            </label>
-        </div> 
-    </div>
-    <!-- <div *ngIf="display.display_training_pepfar" class="card" formArrayName="pepfar">
-      <div class="card-header">
-        <span>{{'TRAINING.PEPFAR_INDICATORS' | translate}}</span>
-      </div>
-      <div class="card-body">
-        <div *ngFor="let option of trainingForm.controls.pepfar.controls;let i = index;" [formGroupName]="i">
-          <pepfar-option [group]="trainingForm.controls.pepfar.controls[i]" [options]='pepfaroptions' [groupid]="i" (onremove)="removePepfarIndicator($event)"></pepfar-option>
-        </div>
-      </div>
-      <div class="card-footer">
-        <button type="button" class="btn btn-primary float-right" (click)="addPepfarIndicator()">{{'TRAINING.ADD_PEPFAR_INDICATOR' | translate}}</button>
-      </div>
-    </div> -->
-    <!-- <div class="form-row" *ngIf="display.display_training_refresher">
-        <label>{{'TRAINING.REFRESHER_COURSE' | translate}}</label>
-    </div>
-    <div class="form-row" *ngIf="display.display_funding_options">
-        <label>{{'TRAINING.FUNDING' | translate}}</label>
-    </div>
-    <!-- NOT IMPLEMENTED display_training_got_curric/GOT CURRICULUM --
-    <div class="form-row" *ngIf="display.display_training_got_comment">
-        <div class="form-group col-md-12">
-            <label for="fcomment">{{'TRAINING.FUNDER_COMMENT' | translate}}</label>
-            <textarea id="fcomment" rows="5" cols="10" class="form-control" formControlName="fundercomment" tooltip="display_training_got_comment" tooltip-placement="top"></textarea>  
-        </div>
-    </div> -->
   </form>
+  <!-- <p>Is form valid? {{trainingForm.status | json}}</p>
+  <pre><code>{{getFormValidationErrors() | json}}</code></pre> -->
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-primary" [disabled]="trainingForm.invalid" (click)="onSubmit()">{{'SHARED.SUBMIT' | translate}}</button>
-  <button type="button" class="btn btn-primary" (click)="onCancel()">{{'SHARED.CANCEL' | translate}}</button>
+  <button *ngIf="(training && training.is_completed !== 1 && training.is_approved !== 2) || !id"   id="btnSubmit" type="button" class="btn btn-sm btn-primary" [disabled]="trainingForm.pristine || trainingForm.invalid" (click)="onSubmit()">{{'SHARED.SUBMIT' | translate}}</button>
+  <button type="button" class="btn btn-sm btn-primary" (click)="onCancel()">{{'SHARED.CANCEL' | translate}}</button>
 </div>
+<!--  -->

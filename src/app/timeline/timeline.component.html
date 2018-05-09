@@ -1,0 +1,23 @@
+<div class="container">
+  <div class="page-header">
+    <h1 id="timeline">Timeline</h1>
+  </div>
+  <ul class="timeline">
+    <li *ngFor="let item of trainings; let i = index;" [ngClass]="[(i+1)%2 === 0 ? 'timeline-inverted' : '']">
+      <div class="timeline-badge" [ngClass]="[item.is_completed === 1 ? 'success' : (item.is_completed === 2 ? 'danger' : 'warning' )]">
+        <i class="fa" [ngClass]="[item.is_completed === 1 ? 'fa-check-square' : 'fa-ellipsis-h']"></i>
+      </div>
+      <div class="timeline-panel">
+        <div class="timeline-heading">
+          <h4 class="timeline-title">{{ item.training_sub_category_phrase }}</h4>
+          <p>{{ item.training_title_phrase }}</p>
+          <p><small class="text-muted"><i class="fa fa-clock"></i> 3rd May, 2018 to 4th May, 2018</small></p>
+        </div>
+        <div class="timeline-body">
+            <p>Training Category: <small class="text-muted">{{ item.training_category_phrase }}</small></p>
+          <p>Certificate Approved <span class="badge badge-pill" [ngClass]="[ item.certapproved === 1 ? 'badge-success' : 'badge-danger']"><i class="fa " [ngClass]="[ item.certapproved === 1 ? 'fa-thumbs-up' : 'fa-thumbs-down']"></i></span></p>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,74 @@
+<form [formGroup]="form" novalidate>
+  <div class="form-row">
+    <div class="col-md-12">
+      <button class="btn btn-sm btn-primary mt-3" (click)="addPerson()"><i class="fa fa-plus-square fa-lg"></i> {{ 'PERSON.ADD_NEW_PERSON' | translate }}</button>
+      <button class="btn btn-sm btn-primary mt-3 float-right" (click)="clearParticipants()"><i class="fa fa-trash-o fa-lg"></i> {{ 'SHARED.REMOVE_ALL' | translate }}</button>
+    </div>
+  </div>
+  <div class="table-responsive-sm my-2">
+    <table class="table table-striped table-bordered table-hover table-sm">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>{{ 'PERSON.FIRST_NAME' | translate }}</th>
+          <th>{{ 'PERSON.LAST_NAME' | translate }}</th>
+          <th>{{ 'PERSON.CADRE' | translate }}</th>
+          <th>{{ 'PERSON.STATION' | translate }}</th>
+          <th>{{ 'PERSON.NATIONAL_ID' | translate }}</th>
+          <th>{{ 'SHARED.ACTION' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="getParticipants() > 0; else nodata">
+        <tr *ngFor="let item of form.controls.participants.value; let i = index;">
+          <td>{{i+1}}</td>
+          <td>{{item.first_name}}</td>
+          <td>{{item.last_name}}</td>
+          <td>{{item.qualification_phrase}}</td>
+          <td>{{item.mfl_name}}</td>
+          <td>{{item.national_id}}</td>
+          <td>
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button type="button" class="btn btn-sm btn-info" (click)="addPerson(item.person_id, item.id)">
+                  <i class="fa fa-pencil-square-o fa-sm"></i> {{ 'SHARED.EDIT' | translate }}
+              </button>
+              <button type="button" class="btn btn-sm btn-danger" (click)="removeParticipant(i)">
+                <i class="fa fa-trash-o fa-lg"></i> {{ 'SHARED.REMOVE' | translate }}
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+      <ng-template #nodata>
+        <tbody>
+          <tr>
+            <td colspan="7">No available data</td>
+          </tr>
+        </tbody>
+      </ng-template>
+    </table>
+  </div>
+</form>
+<form [formGroup]="searchForm" autocomplete="off" (submit)="insertParticipant()" novalidate>
+  <div class="form-row">
+    <div class="form-group col-md-12">
+      <div class="input-group input-group-sm">
+        <label class="input-group-addon" for="fullname">{{'PERSON.PARTICIPANT_NAME' | translate}}</label>
+        <input type="text" id="fullname" formControlName="fullname"
+        [typeahead]="dataSource"
+        (typeaheadLoading)="changeTypeaheadLoading($event)"
+        (typeaheadNoResults)="changeTypeaheadNoResults($event)"
+        (typeaheadOnSelect)="typeaheadOnSelect($event)"            
+        [typeaheadScrollable]="true"
+        [typeaheadOptionsInScrollableView]="5"
+        typeaheadOptionField="fullname"
+        placeholder="People loaded with timeout"
+        class="form-control">
+        <span class="input-group-btn">
+          <button type="submit" class="btn btn-primary">Insert</button>
+        </span>
+      </div>
+      <small *ngIf="typeaheadLoading===true">Loading</small>
+      <small *ngIf="typeaheadNoResults===true">&#10060; No Results Found</small>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,128 @@
+<div class="card my-2 p-0">
+  <div class="card-header header">
+    <h1 class="m-2">{{ 'NAV.CERTIFICATES' | translate }}</h1>
+  </div>
+</div>
+<div style="margin: auto; max-width: 100%; margin-bottom: 5px;">
+    <div class="row">          
+      <div class="col-auto mr-auto">
+        <!-- <button type="button" class="btn btn-primary" (click)="openAdvancedSearch(searchTemplate)">{{ 'SHARED.ADVANCED_SEARCH' | translate }}</button> -->
+        <button type="button" class="btn btn-primary" (click)="refresh()">{{ 'SHARED.REFRESH' | translate }}</button>                 
+      </div>
+
+      <form [formGroup]="searchForm" class="form-inline my-lg-0 col-auto" novalidate>
+        <input formControlName="searchText" class="form-control" type="search" placeholder="Search" aria-label="Search">
+      </form>
+    </div>
+    <div class="table-responsive">
+      <data-table class="table table-bordered table-hover" id="certificate-grid"
+        headerTitle=""
+        [items]="items"
+        [itemCount]="itemCount"
+        (reload)="reloadItems($event)"
+      
+        [pagination]="true"
+        [indexColumn]="true"
+        [indexColumnHeader]="'#'"
+        [expandableRows]="true"
+        
+        [rowTooltip]="rowTooltip">
+          <ng-template #dataTableExpand let-item="item">
+            <ng-container *ngIf="item.training_objectives">
+              <h4 class="text-muted">Objectives of the training</h4>
+              <div [textContent]="item.training_objectives" style="padding: 5px; color: gray"></div>
+              <h4 class="text-muted">Brief Description of how the training was conducted</h4>
+              <div [textContent]="item.training_conduct" style="padding: 5px; color: gray"></div>
+              <h4 class="text-muted">Observations and recommendations</h4>
+              <div [textContent]="item.training_recommendations" style="padding: 5px; color: gray"></div>
+            </ng-container>
+            <ng-container *ngIf="!item.training_objectives">
+              <div class="text-danger">Training Objectives, Conduct and Description is not available</div>
+            </ng-container>
+          </ng-template>
+          <data-table-column
+            [header]="'SHARED.VIEW' | translate"
+            [width]="'75px'">
+            <ng-template #dataTableCell let-item="item">
+              <a (click)="view(item.id)" role="button"><i class="fa fa-eye fa-sm"></i></a>
+            </ng-template>
+          </data-table-column>
+          <data-table-column
+            [property]="'trainingtitle'"
+            [header]="'TRAINING_LIST.TRAINING_TITLE' | translate"
+            [sortable]="true"
+            [resizable]="true">
+          </data-table-column>
+          <data-table-column
+            [property]="'funding_source'"
+            [header]="'TRAINING_LIST.FUNDING_SOURCE' | translate"
+            [sortable]="true"
+            [resizable]="true">
+          </data-table-column>
+          <data-table-column
+            [property]="'startdate'"
+            [header]="'TRAINING_LIST.START_DATE' | translate"
+            [sortable]="true"
+            [resizable]="false"
+            [width]="'190px'">
+          </data-table-column>
+          <data-table-column
+            [property]="'enddate'"
+            [header]="'TRAINING_LIST.END_DATE' | translate"
+            [sortable]="true"
+            [resizable]="false"
+            [width]="'190px'">
+          </data-table-column>
+          <data-table-column
+            [property]="'venue'"
+            [header]="'TRAINING_LIST.VENUE' | translate"
+            [sortable]="true"
+            [resizable]="true"
+            [visible]="false">
+          </data-table-column>
+          <data-table-column
+            [property]="'mentors'"
+            [header]="'TRAINING_LIST.MENTORS' | translate"
+            [sortable]="false"
+            [resizable]="false"
+            [visible]="false">
+          </data-table-column>
+          <data-table-column
+            [property]="'mentees'"
+            [header]="'TRAINING_LIST.MENTEES' | translate"
+            [sortable]="false"
+            [resizable]="false"
+            [visible]="false">
+          </data-table-column>
+          <data-table-column
+            [property]="'certified'"
+            [header]="'TRAINING_LIST.CERTIFIED' | translate"
+            [sortable]="true"
+            [resizable]="true"
+            [visible]="false">
+          </data-table-column>
+          <data-table-column *ngIf="authUser.roles.admin || authUser.roles.sitecoordinator" 
+              [header]="'SHARED.ACTION' | translate"
+              [resizable]="false"
+              [width]="'250px'">
+              <ng-template #dataTableCell let-item="item">
+                <div class="btn-group" role="group" aria-label="Action">
+                  <button *ngIf="auth.canReview(authUser)" type="button" class="btn btn-sm btn-primary" (click)="review(item)"
+                        [disabled]="item.is_completed !== 1">
+                    <i class="fa fa-check-circle fa-sm"></i> {{ 'SHARED.REVIEW' | translate }}
+                  </button>
+                  <button *ngIf="auth.canCertify(authUser)" type="button" class="btn btn-sm btn-secondary" (click)="certify(item.id)"
+                          [disabled]="item.is_completed !== 1">
+                    <i class="fa fa-star fa-sm"></i> {{ 'SHARED.CERTIFY' | translate }}
+                  </button> 
+                  <button *ngIf="auth.canSign(authUser)" type="button" class="btn btn-sm btn-success" (click)="signCertificates(item.id)"
+                          [disabled]="item.is_completed !== 1">
+                    <i class="fa fa-star fa-sm"></i> {{ 'SHARED.SIGN' | translate }}
+                  </button> 
+                </div>
+              </ng-template>
+          </data-table-column>
+      </data-table>
+    </div>
+  </div>
+  

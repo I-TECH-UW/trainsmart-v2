@@ -1,13 +1,24 @@
-<div class="modal-header">
+<div class="modal-header text-white bg-primary">
   <div class="pull-left">
-    <h4 class="modal-title">{{ 'SHARED.CONFIRM_' + type + '_TITLE'  | translate }} {{': ' + appendinfo}}</h4>
+    <!-- <h4 class="modal-title">{{ 'SHARED.CONFIRM_' + type + '_TITLE'  | translate }} {{': ' + appendinfo}}</h4> -->
+    <blockquote class="modal-title blockquote">
+      <h4 class="mb-0">{{ 'SHARED.CONFIRM_' + type + '_TITLE'  | translate }}</h4>
+      <!-- <footer class="blockquote-footer"><cite>{{appendinfo}}</cite></footer> -->
+    </blockquote>
   </div>
   <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 <div class="modal-body">
-  <span>{{ 'SHARED.CONFIRM_' + type + '_MSG' | translate }}</span>
+  <div class="mb-3">
+    {{ 'SHARED.CONFIRM_' + type + '_MSG' | translate }}
+    <small class="text-muted">{{appendinfo}}</small>
+  </div>
+  <div *ngIf="to_comment" class="form-group">
+    <label for="comment">{{ 'SHARED.ANY_COMMENTS' | translate }}</label>
+    <textarea class="form-control" [(ngModel)]="comment"></textarea>
+  </div>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-primary" (click)="yesClicked()">{{'SHARED.YES' | translate}}</button>

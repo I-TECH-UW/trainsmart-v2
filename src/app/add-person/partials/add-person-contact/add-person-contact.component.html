@@ -1,0 +1,81 @@
+<form [formGroup]="form" autocomplete="off" novalidate>
+  <!-- Facility -->
+  <div class="card mb-0">
+    <div class="card-body">
+      <h5 class="card-title">Facility Information</h5>
+      <div class="form-row">
+        <div *ngIf="false" class="form-group col-md-4">
+          <label for="region">{{'PERSON.REGION' | translate}}</label>
+          <select id="region" tooltip="" tooltip-placement="top" class="form-control custom-select" formControlName="region_id">
+            <option value="" selected="selected">--{{ 'SHARED.SELECT' | translate }}--</option>
+            <option *ngFor="let option of regionoptions" value="{{option.id}}">{{option.name}}</option>
+          </select>
+        </div>
+        <div class="form-group col-md-8">
+            <label for="mfl">{{'PERSON.MFL' | translate}}</label>
+            <input type="text" id="mfl" formControlName="mfl_name"
+            [typeahead]="dataSource"
+            (typeaheadLoading)="changeTypeaheadLoading($event)"
+            (typeaheadNoResults)="changeTypeaheadNoResults($event)"
+            (typeaheadOnSelect)="typeaheadOnSelect($event)"            
+            [typeaheadScrollable]="true"
+            [typeaheadOptionsInScrollableView]="5"
+            typeaheadOptionField="name"
+            placeholder="Facilities loaded with timeout"
+            class="form-control">
+            <small *ngIf="typeaheadLoading===true">Loading</small>
+            <small *ngIf="typeaheadNoResults===true">&#10060; No Results Found</small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="mfl_code">{{'PERSON.MFL_CODE' | translate}}</label>
+          <input type="text" id="mfl_code" tooltip="" tooltip-placement="top" class="form-control" formControlName="mfl_code" readonly>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="registration_board">{{'PERSON.REGISTRATION_BOARD' | translate}}</label>
+          <input type="text" id="registration_board" tooltip="" tooltip-placement="top" class="form-control" formControlName="registration_board">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="registration_number">{{'PERSON.REGISTRATION_NUMBER' | translate}}</label>
+          <input type="text" id="registration_number" tooltip="" tooltip-placement="top" class="form-control" formControlName="registration_number">
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Address -->
+  <div class="card mb-0">
+    <div class="card-body">
+      <h5 class="card-title">Address &amp; Phone Information</h5>
+      <div *ngIf="false" class="form-row">
+        <div *ngIf="display.display_people_home_phone" class="form-group col-md-6">
+          <label for="homephone">{{'PERSON.HOME_PHONE' | translate}}</label>
+          <input type="text" id="homephone" tooltip="" tooltip-placement="top" class="form-control" formControlName="phone_home">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="workphone">{{'PERSON.WORK_PHONE' | translate}}</label>
+          <input type="text" id="workphone" tooltip="" tooltip-placement="top" class="form-control" formControlName="phone_work">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="mobilephone">{{'PERSON.MOBILE_PHONE' | translate}}</label>
+          <input type="text" id="mobilephone" tooltip="" tooltip-placement="top" class="form-control" formControlName="phone_mobile">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="email">{{'PERSON.EMAIL' | translate}}</label>
+          <input type="email" id="email" tooltip="" tooltip-placement="top" class="form-control" formControlName="email" aria-describedby="emailHelpBlock">
+          <small id="emailHelpBlock" class="form-text text-muted">
+            johndoe@example.net
+          </small>
+        </div>
+      </div>
+      <div *ngIf="false" class="form-row" >
+        <div *ngIf="display.display_people_fax" class="form-group col-md-6">
+          <label for="fax">{{'PERSON.FAX' | translate}}</label>
+          <input type="text" id="fax" tooltip="" tooltip-placement="top" class="form-control" formControlName="fax">
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

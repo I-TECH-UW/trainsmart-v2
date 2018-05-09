@@ -4,13 +4,67 @@
     margin-top: 20px;
     margin-bottom: 40px;
 }
-.ng-valid[required], .ng-valid.required  {
-    border: 1px solid #42A948; /* green */
+/* .ng-valid[required], .ng-valid.required  {
+    border: 1px solid #42A948; /* green *
 } 
 
-/* .ng-touched.ng-valid:not(form):not(label){
+.ng-invalid:not(form)  {
+    border: 1px solid #a94442; /* red *
+} */
+
+/* Experiment
+.ng-touched.ng-valid:not(form):not(label){
     border: 1px solid #42A948;
 } */
-.ng-invalid:not(form)  {
-    border: 1px solid #a94442; /* red */
+
+.ng-touched.ng-valid[required],
+.ng-dirty.ng-valid[required],
+.ng-touched.ng-valid.required,
+.ng-dirty.ng-valid.required {
+border: 1px solid #42A948;/* lightgreen;  */
+}
+
+.ng-touched.ng-invalid:not(form),
+.ng-dirty.ng-invalid:not(form) {
+border: 1px solid  #a94442; /*darksalmon ; */
+}
+
+/* .required label {
+    font-weight: bold;
+} */
+.required label:after {
+    color: #e32;
+    content: ' *';
+    display:inline;
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+    background-color: lightblue;
+  }
+
+  /* New Addition */
+  .header {
+    color: #dcf3f6;
+    background-color: #00C1D5;
+    /* margin-bottom: 14px; */
+   /*  padding: 12px 0; */
+}
+    .header h1 {
+        color: #fff;
+        font-size: 40px;
+        line-height: 1;
+        margin-top: 0;
+    }
+    .header img {
+		float: left;
+		margin: 0 10px 5px 0;
+	}
+
+.disabledtoolbar {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+#myTable a {
+    cursor:pointer;
 }

@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -12,11 +12,13 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ToastModule, ToastOptions} from 'ng2-toastr/ng2-toastr';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { DataTableModule } from 'angular5-data-table';
 
 // Main and Child Component
 import { AppComponent } from './app.component';
 import { AppComponents, AppRoutes, AppEntryComponents, AppServices } from './app.routing';
-
+import { HttpTokenInterceptor } from './shared';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient, './assets/i18n/', '.json');
@@ -30,7 +32,7 @@ export class CustomToastOption extends ToastOptions {
 @NgModule({
   declarations: [
     AppComponent,
-    AppComponents
+    AppComponents,
   ],
   entryComponents: [
     AppEntryComponents
@@ -51,11 +53,18 @@ export class CustomToastOption extends ToastOptions {
     RouterModule.forRoot(AppRoutes),
     HttpClientModule,
     BrowserAnimationsModule,
-    ToastModule.forRoot()
+    ToastModule.forRoot(),
+    NgxSpinnerModule,
+    DataTableModule
   ],
   providers: [
     AppServices,
-    {provide: ToastOptions, useClass: CustomToastOption}
+    {provide: ToastOptions, useClass: CustomToastOption},
+    {
+        provide: HTTP_INTERCEPTORS,
+        useClass: HttpTokenInterceptor,
+        multi: true,
+    }
   ],
   bootstrap: [AppComponent]
 })

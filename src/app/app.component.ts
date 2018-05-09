@@ -3,9 +3,9 @@ import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { TSROUTES } from './data';
 import { Language, TSLANGUAGES } from './language';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
-import { LoginService } from './services/login.service';
-import { Router } from '@angular/router';
-
+import { AuthenticationService, LoginService, AuthUser} from './shared';
+import { Observable } from 'rxjs/Observable';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-root',
@@ -14,12 +14,16 @@ import { Router } from '@angular/router';
 })
 export class AppComponent implements OnInit {
   title = 'TrainSMART';
+  isLoggedIn$: Observable<boolean>;
+  currentUser$: Observable<AuthUser>;
   routes: any;
   langs: Language[];
-  isLoggedIn: boolean;
 
   constructor(public translate: TranslateService, public toastr: ToastsManager, vRef: ViewContainerRef,
-              private loginService: LoginService, private route: Router) {
+              public authenticationService: AuthenticationService) {
+
+    //this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
     // toastr will be active in all the components of our application
     this.toastr.setRootViewContainerRef(vRef);
 
@@ -34,31 +38,27 @@ export class AppComponent implements OnInit {
     this.translate.use(lang);
 
     this.routes = TSROUTES;
-
-    // Listen to change in login
-    this.loginService.isLoggedIn$.subscribe(
-      loggedIn => {
-        this.isLoggedIn = loggedIn;
-      }
-    );
   }
 
   ngOnInit() {
-    this.loginService.emitLoggedIn(true); // REMOVE THIS
     this.langs = TSLANGUAGES;
 
-    this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
+    /* this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
       console.log('Language changed to ' + this.translate.currentLang);
-    });
+    }); */
 
+    this.isLoggedIn$ = this.authenticationService.isLoggedIn;
+    this.currentUser$ = this.authenticationService.currentUser;
+    /* this.currentUser$.subscribe(
+      authuser => console.log('Auth User Role may just work: ', authuser)
+    ); */
   }
 
   onLanguageChanged(lang: Language) {
     this.translate.use(lang.code);
   }
 
-  logout() {
-    this.route.navigate(['/login']);
-    this.loginService.emitLoggedIn(false);
+  onLogout() {
+    this.authenticationService.logout();
   }
 }

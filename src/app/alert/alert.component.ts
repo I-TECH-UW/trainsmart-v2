@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
-import { Alert, AlertType } from '../models/alert';
-import { AlertService } from '../services/alert.service';
+import { Alert, AlertType, AlertService } from '../shared';
 
 @Component({
   moduleId: module.id,
@@ -25,6 +23,9 @@ export class AlertComponent implements OnInit {
 
       // add alert to array
       this.alerts.push(alert);
+
+      // remove alert after 5 seconds
+      //setTimeout(() => this.removeAlert(alert), 5000);
     });
   }
   removeAlert(alert: Alert) {

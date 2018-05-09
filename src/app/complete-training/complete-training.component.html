@@ -1,0 +1,42 @@
+<div class="modal-header text-white bg-primary">
+    <h4 class="modal-title">{{'TRAINING_LIST.COMPLETE_TRAINING' | translate}}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onCancel()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+  <div *ngIf="training && training.is_completed === 1" class="alert alert-danger" role="alert">
+    The training has been completed. You cannot alter information or upload another/different report. If you submitted insufficient info or uploaded the wrong report please contact 
+    the administrator for assistance.
+  </div>
+  <form *ngIf="training && training.is_completed !== 1" [formGroup]="completeForm" novalidate>
+    <div class="form-group">
+      <label for="username">{{'COMPLETE.OBJECTIVES' | translate}}</label>
+      <textarea rows="5" class="form-control" formControlName="objectives"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="username">{{'COMPLETE.CONDUCT' | translate}}</label>
+      <textarea rows="5" class="form-control" formControlName="conduct"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="username">{{'COMPLETE.RECOMMENDATIONS' | translate}}</label>
+      <textarea rows="5" class="form-control" formControlName="recommendations"></textarea>
+    </div>
+    <p id="dbi-upload-progress" #uploadProgress>Please select a file and click "Upload" to continue.</p>
+    <progressbar [animate]="true" [value]="dynamic" type="success"><b>{{dynamic}}%</b></progressbar>
+    <div class="form-group">
+      <label for="reportfile">Choose file</label>
+      <div class="input-group">
+        <input type="file" class="form-control" id="reportfile" (change)="fileChange($event)" #fileInput accept=".pdf,.doc,.docx">
+        <span class="input-group-btn">
+          <!-- <button class="btn btn-outline-secondary" type="submit" [disabled]="completeForm.invalid || loading">Upload <i class="fa fa-spinner fa-spin fa-fw" *ngIf="loading" aria-hidden="true"></i></button> -->
+          <button class="btn btn-default" type="button"  (click)="clearFile()">Clear file</button>
+        </span>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button *ngIf="training && training.is_completed !== 1" class="btn btn-sm btn-primary" type="submit" [disabled]="completeForm.invalid || loading" (click)="onUpload()">{{ 'SHARED.SUBMIT' | translate }}<i class="fa fa-spinner fa-spin fa-fw" *ngIf="loading" aria-hidden="true"></i></button>
+  <button type="button" class="btn btn-sm btn-default" (click)="onCancel()">{{'SHARED.CANCEL' | translate}}</button>
+</div>

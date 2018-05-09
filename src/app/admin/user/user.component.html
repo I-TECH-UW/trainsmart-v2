@@ -1,0 +1,95 @@
+<div class="row mt-2">          
+  <div class="col-auto mr-auto">
+    <button type="button" class="btn btn-primary" (click)="addUser()">{{ 'USER.ADD_NEW_USER' | translate }}</button>
+    <button type="button" class="btn btn-primary" (click)="refresh()">{{ 'SHARED.REFRESH' | translate }}</button>                 
+  </div>
+
+  <form [formGroup]="searchForm" class="form-inline my-lg-0 col-auto" novalidate>
+    <input formControlName="searchText" class="form-control" type="search" placeholder="Search" aria-label="Search">
+  </form>
+</div>
+<div class="table-responsive">
+  <data-table class="table table-bordered table-hover table-sm m-0 p-0"
+    headerTitle=""
+    [items]="items"
+    [itemCount]="itemCount"
+    (reload)="reloadItems($event)"
+
+    [pagination]="true"
+    [indexColumn]="true"
+    [indexColumnHeader]="'#'"
+    [expandableRows]="true"
+    
+    [rowTooltip]="rowTooltip">
+      <ng-template #dataTableExpand let-item="item">
+        <ng-container *ngIf="item.person_id">
+          <h4 class="text-muted">Associated Account</h4>
+          <div style="padding: 5px; color: gray">
+            Cadre: {{item.person_qualification}}<br>
+            Name:  {{item.person_name}}<br>
+            Phone: {{item.person_phone}}<br>
+            Email: {{item.person_email}}<br>
+            Edit Account: <a role="button" class="btn btn-info btn-sm" style="color: black;" (click)="editPersonAccount(item.person_id)">Click Me</a><br>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!item.person_id">
+          <div class="text-danger">Has no associated account in people list.</div>
+        </ng-container>
+      </ng-template>
+      <data-table-column
+        [property]="'first_name'"
+        [header]="'USER.FIRST_NAME' | translate"
+        [sortable]="true"
+        [resizable]="true">
+      </data-table-column>
+      <data-table-column
+        [property]="'last_name'"
+        [header]="'USER.LAST_NAME' | translate"
+        [sortable]="true"
+        [resizable]="true">
+      </data-table-column>
+      <data-table-column
+        [property]="'email'"
+        [header]="'USER.EMAIL' | translate"
+        [sortable]="true"
+        [resizable]="false">
+      </data-table-column>
+      <data-table-column
+        [property]="'username'"
+        [header]="'USER.USERNAME' | translate"
+        [sortable]="true"
+        [resizable]="true">
+      </data-table-column>
+      <data-table-column
+        [property]="'role_name'"
+        [header]="'USER.ROLE' | translate"
+        [sortable]="true"
+        [resizable]="false">
+      </data-table-column>
+      <data-table-column
+        [property]="'blocked'"
+        [header]="'USER.BLOCKED' | translate"
+        [sortable]="true"
+        [resizable]="false">
+      </data-table-column>
+      <data-table-column
+          [header]="'SHARED.ACTION' | translate"
+          [resizable]="false"
+          [width]="'300px'">
+          <ng-template #dataTableCell let-item="item">
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button type="button" class="btn btn-sm btn-info" (click)="addUser(item.id)">
+                <i class="fa fa-pencil-square-o fa-sm"></i> {{ 'SHARED.EDIT' | translate }}
+              </button>
+              <button type="button" class="btn btn-sm btn-danger" (click)="blockUser(item.id, 1)" [disabled]="item.is_blocked">
+                <i class="fa fa-ban fa-sm"></i> {{ 'SHARED.BLOCK' | translate }}
+              </button>    
+              <button type="button" class="btn btn-sm btn-success" (click)="blockUser(item.id, 0)" [disabled]="!item.is_blocked">
+                <i class="fa fa-universal-access fa-sm"></i> {{ 'SHARED.ALLOW' | translate }}
+              </button>
+            </div>
+          </ng-template>
+      </data-table-column>
+  </data-table>
+</div>
+

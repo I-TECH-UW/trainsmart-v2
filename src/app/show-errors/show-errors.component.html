@@ -1,0 +1,6 @@
+<!-- <ul *ngIf="shouldShowErrors()">
+  <li style="color: red" *ngFor="let error of listOfErrors()">{{error}}</li>
+</ul> -->
+<ng-container *ngIf="shouldShowErrors()">
+    <small class="form-text " style="color: red" *ngFor="let error of listOfErrors()">{{error}}</small>
+</ng-container>

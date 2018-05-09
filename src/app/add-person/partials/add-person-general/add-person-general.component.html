@@ -1,0 +1,74 @@
+<div class="card mb-0">
+  <div class="card-body">
+    <form [formGroup]="form" autocomplete="off" novalidate>
+      <div class="form-row">
+        <div class="form-group col-md-6 required">
+          <label for="nationalid">{{'PERSON.NATIONAL_ID' | translate}}</label>
+          <input id="nationalid" tooltip="" tooltip-placement="top" type="text" class="form-control" formControlName="national_id" required>
+            <app-show-errors [control]="form.get('national_id')"></app-show-errors>
+        </div>
+        <div class="form-group col-md-6 required">
+          <label class="float-right custom-control custom-radio custom-control-inline" *ngFor="let option of genderList; let idx = index">
+            <input type="radio" value="{{option.id}}" formControlName="gender_id" class="custom-control-input" required>
+            <span class="custom-control-indicator"></span>
+            <span class="custom-control-description">{{'SHARED.' + option.name | uppercase | translate}}</span>
+          </label>
+        </div>
+      </div>
+      <div class="form-row">
+        <div *ngIf="false" class="form-group col-md-4">
+          <label for="title">{{'PERSON.TITLE' | translate}}</label>
+          <select id="title" tooltip="" tooltip-placement="top" class="form-control custom-select" formControlName="title_option_id">
+            <option value="" selected="selected">--{{ 'SHARED.SELECT' | translate }}--</option>
+            <option *ngFor="let option of titleList" value="{{option.id}}">{{option.name}}</option>
+          </select>
+        </div>
+        <div class="form-group col-md-6 required">
+          <label for="firstname">{{'PERSON.FIRST_NAME' | translate}}</label>
+          <input id="firstname" tooltip="" tooltip-placement="top" type="text" class="form-control" formControlName="first_name" required>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="middlename">{{'PERSON.MIDDLE_NAME' | translate}}</label>
+          <input id="middlename" tooltip="" tooltip-placement="top" type="text" class="form-control" formControlName="middle_name" >
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-8 required">
+          <label for="lastname">{{'PERSON.LAST_NAME' | translate}}</label>
+          <input id="lastname" tooltip="" tooltip-placement="top" type="text" class="form-control" formControlName="last_name" required>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="active_trainer">{{'PERSON.ACTIVE_TRAINER' | translate}}</label>
+          <select id="active_trainer" class="form-control custom-select" formControlName="is_active_trainer">
+            <option value="" [selected]="true">--{{ 'SHARED.SELECT' | translate }}--</option>
+            <option value="1">{{'SHARED.YES' | translate }}</option>
+            <option value="0">{{'SHARED.NO' | translate }}</option>
+          </select>
+        </div> 
+        <div *ngIf="false" class="form-group col-md-4">
+          <label for="title">{{'PERSON.SUFFIX' | translate}}</label>
+          <select id="title" tooltip="" tooltip-placement="top" class="form-control custom-select" formControlName="title_option_id">
+            <option value="" selected="selected">--{{ 'SHARED.SELECT' | translate }}--</option>
+            <option *ngFor="let option of suffixList" value="{{option.id}}">{{option.name}}</option>
+          </select>
+        </div>
+        <div *ngIf="false" class="form-group col-md-4">
+          <label for="birthdate">{{ 'PERSON.BIRTH_DATE' | translate }}</label>
+          <div class="input-group">
+            <input type="text" 
+                  class="form-control"
+                  placement = "top"
+                  #dp="bsDatepicker"
+                  bsDatepicker
+                  formControlName="dob">
+            <span class="input-group-btn">
+              <button class="btn btn-primary" type="button" (click)="dp.toggle()"><i class="fa fa-calendar-o" aria-hidden="true"></i></button>
+            </span>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+  

@@ -1,0 +1,54 @@
+<div class="modal-header text-white bg-primary">
+    <h4 class="modal-title">{{'TRAINING_LIST.PARTICIPANT_SCORES' | translate}}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onCancel()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+  <div *ngIf="training" class="card text-white bg-info mb-3">
+    <div class="card-body">
+      <h5 class="card-title">{{training.training_sub_category_phrase}}</h5>
+      <h6 class="card-subtitle mb-2">{{training.training_title_phrase}}</h6>
+      <p class="card-text">{{training.training_start_date}} to {{training.training_end_date}}</p>
+      <p>
+        {{training.training_length_value}} {{training.training_length_interval}}{{training.training_length_value > 1 ? 's' : null}} <br/>
+        {{training.county}} {{ training.county ? 'County' : null }} <br/>
+        {{training.training_venue}}<br/>
+        {{training.cpd ? 'CPD Points: ' + training.cpd : null}}
+      </p>
+    </div>
+  </div>
+  <div *ngIf="training &&training.is_completed === 1" class="alert alert-danger" role="alert">
+    {{'SCORE.ALERT_TEST_SCORE' | translate}}
+  </div>
+  <table class="table table-bordered table-striped table-condensed b-t">
+    <thead>
+      <tr>
+        <th>{{ 'PERSON.FIRST_NAME' | translate }}</th>
+        <th>{{ 'PERSON.MIDDLE_NAME' | translate }}</th>
+        <th>{{ 'PERSON.LAST_NAME' | translate }}</th>
+        <th>{{ 'SCORE.PRE_TEST' | translate }}</th>
+        <th>{{ 'SCORE.POST_TEST' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of list;let i = index;">
+        <td>{{item.first_name}}</td>
+        <td>{{item.middle_name}}</td>
+        <td>{{item.last_name}}</td>
+        <td *ngIf="training.is_completed !== 1">
+          <input text="number" [(ngModel)]="item.pre_test" class="form-control input-sm" size="5" placeholder="Pre-test" />
+        </td>
+        <td *ngIf="training.is_completed === 1">{{item.pre_test}}</td>
+        <td *ngIf="training.is_completed !== 1">
+          <input text="number" [(ngModel)]="item.post_test" class="form-control input-sm" size="5" placeholder="Post-test" />
+        </td>
+        <td *ngIf="training.is_completed === 1">{{item.post_test}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal-footer">
+  <button *ngIf="training && training.is_completed !== 1" id="btnSubmit" type="button" class="btn btn-sm btn-primary" (click)="onSubmit()">{{'SHARED.SUBMIT' | translate}}</button>
+  <button type="button" class="btn btn-sm btn-primary" (click)="onCancel()">{{'SHARED.CANCEL' | translate}}</button>
+</div>

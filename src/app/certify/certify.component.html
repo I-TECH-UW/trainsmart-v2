@@ -1,0 +1,70 @@
+<div class="modal-header text-white bg-primary">
+  <h4 class="mb-0">{{ (certifyForm.get('type').value == 1 ? 'CERTIFICATE.CERTIFY' : 'CERTIFICATE.SIGN_CERTIFICATES') | translate}}</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="onCancel()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="table-responsive my-2">
+    <table id="certs" class="table table-sm table-striped table-bordered table-hover">
+      <thead>
+        <tr>
+          <th style="vertical-align:top">#</th>
+          <th style="vertical-align:top">{{ 'PERSON.FIRST_NAME' | translate}}</th>
+          <th style="vertical-align:top">{{ 'PERSON.MIDDLE_NAME' | translate}}</th>
+          <th style="vertical-align:top">{{ 'PERSON.LAST_NAME' | translate}}</th>
+          <th style="vertical-align:top">{{ 'PERSON.NATIONAL_ID' | translate}}</th>
+          <th style="vertical-align:top">{{ 'CERTIFICATE.CERT_TYPE' | translate}}</th>
+          <th style="vertical-align:top">{{ 'CERTIFICATE.SYS_COMMENTS' | translate}}</th>
+          <th style="vertical-align:top">{{ 'SCORE.PRE_TEST' | translate }}</th>
+          <th style="vertical-align:top">{{ 'SCORE.POST_TEST' | translate }}</th>
+          <th class="text-center"  style="vertical-align:top">
+            {{ 'CERTIFICATE.CERT_APPROVAL' | translate }}<br/>
+            <input *ngIf="certifyForm.get('type').value == 1" type="checkbox" [(ngModel)]="selectedAll" (change)="selectAll();"/>
+          </th>
+          <th *ngIf="certifyForm.get('type').value == 2">{{'SHARED.ACTION' | translate}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of listAll; let i = index;" 
+        [ngClass]="{
+          'bg-secondary text-white':item.disabled === 1, 
+          'bg-warning':certifyForm.get('type').value === 2 && item.disabled !== 1 && item.certapproved === 0}
+        "> <!-- [ngClass]="[item.disabled === 1 ? 'bg-warning' : '']" -->
+          <td>{{i+1}}</td>
+          <td>{{item.first_name}}</td>
+          <td>{{item.middle_name}}</td>
+          <td>{{item.last_name}}</td>
+          <td>{{item.national_id}}</td>
+          <td>{{item.certtype}}</td>
+          <td class="text-wrap">{{item.sys_comments}}</td>
+          <td>{{item.pre_test}}</td>
+          <td>{{item.post_test}}</td>
+          <td>
+            <input *ngIf="certifyForm.get('type').value == 1" type="checkbox" [(ngModel)]="item.certapproved" (change)="checkIfAllSelected();" class="form-control input-sm" [disabled]="item.disabled === 1" />
+            <ng-container *ngIf="certifyForm.get('type').value == 2">{{item.certapproved ? 'YES' : 'NO'}}</ng-container>
+          </td>
+          <td *ngIf="certifyForm.get('type').value == 2">
+            <div *ngIf="!(item.disabled === 1)" class="btn-group">
+              <button type="button" class="btn btn-sm btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{'SHARED.PREVIEW' | translate}}
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" (click)="preview(item.id)">Popup</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" (click)="preview(item.id, 1)">Embeded</a>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <button *ngIf="innerHtml" class="mb-3" (click)="clearInnerHtml()">{{ 'SHARED.CLEAR_EMBEDDING' | translate }}</button>
+  <div *ngIf="innerHtml" [innerHTML]="innerHtml"></div>
+</div>
+<div class="modal-footer">
+  <button *ngIf="certifyForm.get('type').value == 1" id="btnSubmit" type="button" class="btn btn-sm btn-primary" (click)="onSubmit()">{{'SHARED.SUBMIT' | translate}}</button>
+  <button *ngIf="certifyForm.get('type').value == 2" id="btnSign" type="button" class="btn btn-sm btn-primary" (click)="sign()">{{'SHARED.SIGN' | translate}}</button>
+  <button type="button" class="btn btn-sm btn-primary" (click)="onCancel()">{{'SHARED.CANCEL' | translate}}</button>
+</div>

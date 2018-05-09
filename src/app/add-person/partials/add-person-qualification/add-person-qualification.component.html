@@ -1,0 +1,39 @@
+<div class="card mb-0">
+  <div class="card-body">
+    <form [formGroup]="form" autocomplete="off" novalidate>
+      <div class="form-row">
+        <div class="form-group col-md-12 required">
+          <label for="primaryqualification">{{'PERSON.PRIMARY_QUALIFICATION' | translate}}</label>
+          <select id="primaryqualification" tooltip="" tooltip-placement="top" class="form-control custom-select" formControlName="primary_qualification_option_id" required>
+            <option value="" selected="selected">--{{ 'SHARED.SELECT' | translate }}--</option>
+            <option *ngFor="let option of qualificationList" value="{{option.id}}">{{option.name}}</option>
+          </select>
+        </div>
+        <div *ngIf="false" class="form-group col-md-6">
+          <label for="primaryresponsibility">{{'PERSON.PRIMARY_RESPONSIBILITY' | translate}}</label>
+          <select id="primaryresponsibility" tooltip="" tooltip-placement="top" class="form-control custom-select" formControlName="primary_responsibility_option_id">
+            <option value="" selected="selected">--{{ 'SHARED.SELECT' | translate }}--</option>
+            <option *ngFor="let option of primaryResponsibilityList" value="{{option.id}}">{{option.name}}</option>
+          </select>
+        </div>
+      </div>
+      <div *ngIf="false" class="form-row">
+        <div class="form-group col-md-6">
+          <label for="secondaryresponsibility">{{'PERSON.SECONDARY_RESPONSIBILITY' | translate}}</label>
+          <select id="secondaryresponsibility" tooltip="" tooltip-placement="top" class="form-control custom-select" formControlName="secondary_responsibility_option_id">
+            <option value="" selected="selected">--{{ 'SHARED.SELECT' | translate }}--</option>
+            <option *ngFor="let option of secondaryResponsibilityList" value="{{option.id}}">{{option.name}}</option>
+          </select>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="reasonattending">{{'PERSON.REASON_ATTENDING' | translate}}</label>
+          <select id="reasonattending" tooltip="" tooltip-placement="top" class="form-control custom-select" formControlName="attend_reason_option_id">
+            <option value="" selected="selected">--{{ 'SHARED.SELECT' | translate }}--</option>
+            <option *ngFor="let option of reasonAttendingList" value="{{option.id}}">{{option.name}}</option>
+          </select>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>

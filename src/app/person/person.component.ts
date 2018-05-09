@@ -1,12 +1,14 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { PersonService } from '../services/person.service';
-import { PersonList } from '../models/person-list';
+import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { PersonService, PersonList, AuthenticationService, AuthUser } from '../shared';
 import { Subscription } from 'rxjs/Subscription';
 import { ConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { ToastsManager } from 'ng2-toastr';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { AddPersonComponent } from '../add-person/add-person.component';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
+import { DataTable } from 'angular5-data-table';
+
 
 @Component({
   moduleId: module.id,
@@ -16,42 +18,59 @@ import { FormControl } from '@angular/forms';
   encapsulation: ViewEncapsulation.None
 })
 export class PersonComponent implements OnInit {
+  authUser:AuthUser;
   bsModalRef: BsModalRef;
   people: PersonList[] = [];
   subscription: Subscription = new Subscription();
+  listForm: FormGroup;
+  searchForm: FormGroup;
+  searchField: FormControl;
   // For pagination
-  maxSize: number;
-  totalItems: number;
-  currentPage: number;
-  numPages: number;
-  itemsPerPage: number;
-  // searchForm: FormGroup;
+  combined: any;
+  advancedSearch: string;
+
+  items = [];
+  itemCount = 0;
+  @ViewChild(DataTable) peopleTable: DataTable;
+
 
   constructor(private personService: PersonService, private toastr: ToastsManager,
-              private modalService: BsModalService) {
-    this.maxSize = 10;
-    this.totalItems = 175;
-    this.currentPage = 1;
-    this.numPages = 0;
-    this.itemsPerPage = 10;
+              private modalService: BsModalService, private fb: FormBuilder,
+              public auth:AuthenticationService, private router:Router) {
+
+    this.searchField = new FormControl('');
+    this.searchForm = this.fb.group({searchText: this.searchField});
+
+    this.searchField.valueChanges
+    .debounceTime(400)
+    .switchMap(term => {
+      this.advancedSearch = '';
+      this.peopleTable.page = 1; //This will ensure a reload call to reloadItems
+      return [];
+    })
+    .subscribe(
+      result => {}
+    );
+  }
+
+  reloadItems(params) {
+    const search = this.searchForm.get('searchText').value;
+    this.personService.queryList(params, search).subscribe(
+      res => {
+        this.items = res.items;
+        this.itemCount = res.itemCount;
+      }
+    );
+  }
+
+  rowTooltip(item) {
+    return `ID: ${item.id}`;
   }
 
   ngOnInit() {
-    this.loadData();
-  }
-
-  pageChanged(event: any): void {
-    if (event.page !== this.currentPage) {
-      this.currentPage = event.page;
-      this.loadData();
-    }
-  }
-
-  private loadData() {
-    this.personService.getPersonList(this.currentPage, this.itemsPerPage).subscribe(
-      result => {
-        this.people = <PersonList[]>result.items;
-        this.totalItems = result.total;
+    this.auth.currentUser.subscribe(
+      authuser => {
+        this.authUser = authuser;
       }
     );
   }
@@ -63,18 +82,18 @@ export class PersonComponent implements OnInit {
     (<AddPersonComponent>this.bsModalRef.content).onClose.subscribe(result => {
       if (result) {
         // Reload data
-        this.loadData();
+        this.reloadItems(this.peopleTable.displayParams);
       }
     }) ;
   }
 
   refresh() {
-    this.loadData();
-    this.toastr.info('Records list has been refreshed.', 'List Refreshed');
+    this.searchForm.get('searchText').setValue('');
+    this.reloadItems(this.peopleTable.displayParams);
   }
 
-  edit(item: PersonList) {
-
+  view(personid:number) {
+    this.router.navigate([`/viewperson/${personid}`]);
   }
 
   delete(obj: any) {
@@ -85,7 +104,7 @@ export class PersonComponent implements OnInit {
     this.subscription.add(
       (<ConfirmModalComponent>this.bsModalRef.content).onClose.subscribe(result => {
         if (result) {
-          this.personService.deletePerson(item.id).subscribe(() => this.loadData());
+          this.personService.deletePerson(item.id).subscribe(() => this.reloadItems(this.peopleTable.displayParams));
           this.toastr.info('The selected record was successfully deleted.', 'Record Deleted');
         }
       })
